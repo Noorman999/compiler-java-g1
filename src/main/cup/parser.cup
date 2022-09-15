@@ -11,9 +11,45 @@ terminal PLUS;
 terminal SUB;
 terminal MULT;
 terminal DIV;
+
+terminal GREATER;
+terminal LESS;
+
+terminal AND;
+terminal OR;
+terminal NOT;
+
 terminal OPEN_BRACKET;
 terminal CLOSE_BRACKET;
+terminal OPEN_CURLY_BRACKET;
+terminal CLOSE_CURLY_BRACKET;
+terminal OPEN_SQUARE_BRACKET;
+terminal CLOSE_SQUARE_BRACKET;
+terminal COLON;
+terminal COMMA;
+terminal QUOTE;
+
+terminal INIT;
+terminal READ;
+terminal WRITE;
+
+terminal WHILE;
+terminal IF;
+terminal ELSE;
+
+terminal IGUALES;
+terminal DO;
+terminal CASE;
+terminal DEFAULT;
+terminal ENDDO;
+
+terminal INT;
+terminal FLOAT;
+terminal STRING;
+
 terminal INTEGER_CONSTANT;
+terminal FLOAT_CONSTANT;
+terminal STRING_CONSTANT;
 terminal IDENTIFIER;
 
 // Non Terminals
