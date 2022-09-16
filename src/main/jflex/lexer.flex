@@ -83,7 +83,7 @@ String = "String"
 
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
-IntegerConstant = {Digit}+
+IntegerConstant = {Sub}?{Digit}+
 FloatConstant = {Digit}+ "." {Digit} | {Digit}+ "." | "." {Digit}+
 StringConstant = {Quote} (.)+ {Quote}
 
@@ -94,11 +94,17 @@ StringConstant = {Quote} (.)+ {Quote}
 
 <YYINITIAL> {
   /* identifiers */
-  {Identifier}                              { return symbol(ParserSym.IDENTIFIER, yytext()); }
+  {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
+                                               else{return symbol(ParserSym.IDENTIFIER, yytext());}}
   /* Constants */
-  {IntegerConstant}                         { return symbol(ParserSym.INTEGER_CONSTANT, yytext()); }
+  {IntegerConstant}                         { long number = Long.parseLong(yytext());
+                                              if(number > MAX_INT_16 || number < 0){ throw new InvalidIntegerException(yytext()); }
+                                                else{return symbol(ParserSym.INTEGER_CONSTANT, yytext());}}
+
   {FloatConstant}                           { return symbol(ParserSym.FLOAT_CONSTANT, yytext()); }
-  {StringConstant}                          { return symbol(ParserSym.STRING_CONSTANT, yytext()); }
+
+  {StringConstant}                          { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
+                                              	else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
 
 
   /* operators */
