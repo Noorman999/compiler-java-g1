@@ -73,3 +73,33 @@ term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
+
+
+
+// creo que necesitamos una sentencia de: INIT, READ, WRITE, WHILE, IF, ELSE, IGUALES, DO, CASE, DEFAULT, ENDDO
+                                                 //     //    //    //
+
+sentence ::= read {: System.out.println("read"); :};
+read ::= READ IDENTIFIER {: System.out.println("identifier"); :};
+
+sentence ::= write {: System.out.println("read"); :};
+write ::= WRITE IDENTIFIER {: System.out.println("identifier"); :};
+
+sentence ::= if {: System.out.println("if"); :};
+if ::= IF OPEN_BRACKET conditions CLOSE_BRACKET start_iF end_if {: System.out.println("if"); :};
+conditions ::= condition logic_operator condition {: System.out.println("conditions"); :};
+condition ::= IDENTIFIER comparation num {: System.out.println("comparation"); :};
+comparation ::= LESS {: System.out.println("<"); :};
+comparation ::= GREATER {: System.out.println(">"); :};
+num ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
+num ::= FLOAT_CONSTANT:constant {: System.out.println("Float constant: " + constant ); :};
+logic_operator ::= AND {: System.out.println("&"); :};
+logic_operator ::= OR {: System.out.println("||"); :};
+logic_operator ::= NOT {: System.out.println("not"); :};
+start_iF ::= ;
+end_if ::= ;
+
+sentence ::= while {: System.out.println("while"); :};
+while ::= WHILE OPEN_BRACKET list_num CLOSE_BRACKET DO sentence ENDDO {: System.out.println("while"); :}; // creo que seria ENDWHILE no ENDDO
+list_num ::= list_num COMMA num {: System.out.println("list_num"); :}; // solo sirve para numeros, hay que ver como hacer que sirva para letras tambien
+
