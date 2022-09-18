@@ -53,14 +53,35 @@ terminal STRING_CONSTANT;
 terminal IDENTIFIER;
 
 // Non Terminals
+non terminal programa;
 non terminal sentence;
+non terminal declaration;
 non terminal assignment;
 non terminal expression;
 non terminal term;
 non terminal factor;
 
 // Start Symbol Definition
-start with sentence;
+start with programa;
+
+programa ::=
+    sentence {: System.out.println("Programa es: sentencias\nCOMPILACION EXITOSA\n"); :};
+sentence ::=
+    sentence statement_block
+    | statement_block
+    | sentence assignment
+    | assignment
+    | sentence in
+    | in
+    | sentence out
+    | out
+    | sentence if
+    | if
+    | sentence while
+    | while ;
+statement_block ::=
+    INIT OPEN_BRACKET statement_list CLOSE_BRACKET {: System.out.println("Programa es: sentencias\nCOMPILACION EXITOSA\n"); :};
+
 
 sentence ::= assignment {: System.out.println("End"); :};
 assignment ::= IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
@@ -82,7 +103,7 @@ factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor =
 sentence ::= read {: System.out.println("read"); :};
 read ::= READ IDENTIFIER {: System.out.println("identifier"); :};
 
-sentence ::= write {: System.out.println("read"); :};
+sentence ::= write {: System.out.println("write"); :};
 write ::= WRITE IDENTIFIER {: System.out.println("identifier"); :};
 
 sentence ::= if {: System.out.println("if"); :};
