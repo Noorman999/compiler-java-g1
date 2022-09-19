@@ -53,7 +53,7 @@ terminal STRING_CONSTANT;
 terminal IDENTIFIER;
 
 // Non Terminals
-non terminal programa;
+non terminal program;
 non terminal sentence;
 non terminal declaration;
 non terminal assignment;
@@ -62,10 +62,10 @@ non terminal term;
 non terminal factor;
 
 // Start Symbol Definition
-start with programa;
+start with program;
 
-programa ::=
-    sentence {: System.out.println("Programa es: sentencias\nCOMPILACION EXITOSA\n"); :};
+program ::=
+    sentence {: System.out.println("Programa es: sentencias COMPILACION EXITOSA"); :};
 sentence ::=
     sentence statement_block
     | statement_block
@@ -79,8 +79,21 @@ sentence ::=
     | if
     | sentence while
     | while ;
+    //falta agregar CASE
 statement_block ::=
-    INIT OPEN_BRACKET statement_list CLOSE_BRACKET {: System.out.println("Programa es: sentencias\nCOMPILACION EXITOSA\n"); :};
+    INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET {: System.out.println("statement_block es: INIT { statement_list } "); :};
+statement_list ::=
+    statement_list declaration
+    | declaration;
+declaration ::=
+    tipo_variable lista_variables;
+tipo_variable::=
+    INT
+    | FLOAT
+    | STRING;
+lista_variables::=
+    lista_variables COMMA IDENTIFIER
+    | IDENTIFIER;
 
 
 sentence ::= assignment {: System.out.println("End"); :};
@@ -107,7 +120,7 @@ sentence ::= write {: System.out.println("write"); :};
 write ::= WRITE IDENTIFIER {: System.out.println("identifier"); :};
 
 sentence ::= if {: System.out.println("if"); :};
-if ::= IF OPEN_BRACKET conditions CLOSE_BRACKET start_iF end_if {: System.out.println("if"); :};
+if ::= IF OPEN_BRACKET conditions CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("if"); :};
 conditions ::= condition logic_operator condition {: System.out.println("conditions"); :};
 condition ::= IDENTIFIER comparation num {: System.out.println("comparation"); :};
 comparation ::= LESS {: System.out.println("<"); :};
@@ -117,8 +130,6 @@ num ::= FLOAT_CONSTANT:constant {: System.out.println("Float constant: " + const
 logic_operator ::= AND {: System.out.println("&"); :};
 logic_operator ::= OR {: System.out.println("||"); :};
 logic_operator ::= NOT {: System.out.println("not"); :};
-start_iF ::= ;
-end_if ::= ;
 
 sentence ::= while {: System.out.println("while"); :};
 while ::= WHILE OPEN_BRACKET list_num CLOSE_BRACKET DO sentence ENDDO {: System.out.println("while"); :}; // creo que seria ENDWHILE no ENDDO
