@@ -60,6 +60,18 @@ non terminal assignment;
 non terminal expression;
 non terminal term;
 non terminal factor;
+non terminal statement_block;
+non terminal statement_list;
+non terminal data_type;
+non terminal in;
+non terminal out;
+non terminal if;
+non terminal while;
+non terminal condition;
+non terminal logic_operator;
+non terminal comparation;
+non terminal case;
+non terminal iguales;
 
 // Start Symbol Definition
 start with programa;
