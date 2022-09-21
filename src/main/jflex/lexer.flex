@@ -45,6 +45,7 @@ Assig = "="
 
 Greater = ">"
 Less = "<"
+Equal = "=="
 
 And = "&"
 Or = "||"

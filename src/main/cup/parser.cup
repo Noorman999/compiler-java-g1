@@ -14,6 +14,7 @@ terminal DIV;
 
 terminal GREATER;
 terminal LESS;
+terminal EQUAL;
 
 terminal AND;
 terminal OR;
@@ -52,6 +53,9 @@ terminal FLOAT_CONSTANT;
 terminal STRING_CONSTANT;
 terminal IDENTIFIER;
 
+terminal OPEN_COMMENT;
+terminal CLOSE_COMMENT;
+
 // Non Terminals
 non terminal programa;
 non terminal sentence;
@@ -72,12 +76,16 @@ non terminal logic_operator;
 non terminal comparation;
 non terminal case;
 non terminal iguales;
+non terminal statement_case;
+non terminal comments;
+non terminal comment;
 
 // Start Symbol Definition
 start with programa;
 
 programa ::=
     sentence {: System.out.println("Programa es: sentencias\nCOMPILACION EXITOSA\n"); :};
+
 sentence ::=
     sentence statement_block
     | statement_block {: System.out.println("Statement block"); :}
@@ -94,7 +102,10 @@ sentence ::=
     | sentence case // verificar
     | case {: System.out.println("Case"); :}
     | sentence iguales
-    | iguales {: System.out.println("Iguales"); :};
+    | iguales {: System.out.println("Iguales"); :}
+    | sentence comment
+    | comment {: System.out.println("Comment"); :};
+
 statement_block ::=
     INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET;
 statement_list ::=
@@ -108,24 +119,29 @@ data_type ::=
     | INT
     | STRING;
 
-//sentence ::= assignment {: System.out.println("End"); :};
-assignment ::= IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
-expression ::= expression PLUS term {: System.out.println("+"); :};
-expression ::= expression SUB term {: System.out.println("-"); :};
-expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("*"); :};
-term ::= term DIV factor {: System.out.println("/"); :};
-term ::= factor {: System.out.println("Term = factor"); :};
-factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
-factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
+assignment ::=
+    IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
+expression ::=
+    expression PLUS term {: System.out.println("+"); :}
+    | expression SUB term {: System.out.println("-"); :}
+    | term {: System.out.println("Expression = Term"); :};
+term ::=
+    term MULT factor {: System.out.println("*"); :}
+    | term DIV factor {: System.out.println("/"); :}
+    | factor {: System.out.println("Term = factor"); :};
+factor ::=
+    IDENTIFIER:id  {: System.out.println("Id: " + id); :}
+    | INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :}
+    | FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant ); :}
+    | OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
 
+in ::=
+    READ OPEN_BRACKET IDENTIFIER CLOSE_BRACKET; //pueden ser solo variables las que lee?
 
-in ::= READ OPEN_BRACKET IDENTIFIER CLOSE_BRACKET;
 out ::=
     WRITE OPEN_BRACKET IDENTIFIER CLOSE_BRACKET
     | WRITE OPEN_BRACKET STRING_CONSTANT CLOSE_BRACKET;
+
 if ::=
     IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("if"); :}
     | IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("if and else"); :};
@@ -138,5 +154,30 @@ logic_operator ::=
     | OR {: System.out.println("||"); :};
 comparation ::=
     LESS {: System.out.println("<"); :}
-    | GREATER {: System.out.println(">"); :};
-while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("While"); :};
+    | GREATER {: System.out.println(">"); :}
+    | EQUAL {: System.out.println("=="); :};
+
+while ::=
+    WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("While"); :};
+
+case ::=
+    DO IDENTIFIER statement_case DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ENDDO
+    | DO IDENTIFIER statement_case DEFAULT ENDDO; //No sabemos si dejar el default en este caso
+statement_case ::=
+    statement_case CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET
+    | CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET;
+
+comments ::=
+    OPEN_COMMENT comment CLOSE_COMMENT;
+
+comment ::=
+    comment STRING_CONSTANTN
+    | STRING_CONSTANT;
+
+    //#Iguales ( a+w/b, [(d-3)*2,e,f] ) = 2 si (a+w/b = (d-3)*2 ) & (a+w/b =f) & (a+w/b ≠ e)
+iguales ::=
+    IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET assignment;
+    //FALTA TERMINAR LOKO
+lista_expression ::=
+    lista_expression COMMA expression
+    | expression;
