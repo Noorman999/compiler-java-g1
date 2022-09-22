@@ -79,6 +79,7 @@ non terminal iguales;
 non terminal statement_case;
 non terminal comments;
 non terminal comment;
+non terminal lista_expression;
 
 // Start Symbol Definition
 start with programa;
@@ -103,8 +104,8 @@ sentence ::=
     | case {: System.out.println("Case"); :}
     | sentence iguales
     | iguales {: System.out.println("Iguales"); :}
-    | sentence comment
-    | comment {: System.out.println("Comment"); :};
+    | sentence comments
+    | comments {: System.out.println("Comment"); :};
 
 statement_block ::=
     INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET;
@@ -167,11 +168,10 @@ statement_case ::=
     statement_case CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET
     | CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET;
 
-comments ::=
-    OPEN_COMMENT comment CLOSE_COMMENT;
+comments ::= OPEN_COMMENT comment CLOSE_COMMENT;
 
 comment ::=
-    comment STRING_CONSTANTN
+    comment STRING_CONSTANT
     | STRING_CONSTANT;
 
     //#Iguales ( a+w/b, [(d-3)*2,e,f] ) = 2 si (a+w/b = (d-3)*2 ) & (a+w/b =f) & (a+w/b ≠ e)

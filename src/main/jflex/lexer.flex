@@ -117,6 +117,7 @@ StringConstant = {Quote} (.)+ {Quote}
 
   {Greater}                                 { return symbol(ParserSym.GREATER); }
   {Less}                                    { return symbol(ParserSym.LESS); }
+  {Equal}                                   { return symbol(ParserSym.EQUAL); }
 
   {And}                                     { return symbol(ParserSym.AND); }
   {Or}                                      { return symbol(ParserSym.OR); }
