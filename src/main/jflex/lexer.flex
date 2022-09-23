@@ -30,7 +30,7 @@ import static lyc.compiler.constants.Constants.*;
 
 
 LineTerminator = \r|\n|\r\n
-InputCharacter = [^\r\n]
+//InputCharacter = [^\r\n]
 Identation =  [ \t\f]
 
 OpenComment = "/*"
@@ -60,6 +60,7 @@ CloseSquareBracket = "]"
 Colon = ":"
 Comma = ","
 Quote = [\"]
+Point = "."
 
 Letter = [a-zA-Z]
 Digit = [0-9]
@@ -85,6 +86,8 @@ String = "String"
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Sub}?{Digit}+
+//FloatConstant = {Digit}+ {Point} {Digit} | {Digit}+ {Point} | {Point} {Digit}+
+//StringConstant = {Quote} {Letter}+ {Quote}
 FloatConstant = {Digit}+ "." {Digit} | {Digit}+ "." | "." {Digit}+
 StringConstant = {Quote} (.)+ {Quote}
 
@@ -132,6 +135,7 @@ StringConstant = {Quote} (.)+ {Quote}
   {Colon}                                   { return symbol(ParserSym.COLON); }
   {Comma}                                   { return symbol(ParserSym.COMMA); }
   {Quote}                                   { return symbol(ParserSym.QUOTE); }
+  {Point}                                   { return symbol(ParserSym.POINT); }
 
   {Init}                                    { return symbol(ParserSym.INIT); }
   {Read}                                    { return symbol(ParserSym.READ); }
