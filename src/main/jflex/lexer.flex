@@ -35,7 +35,7 @@ Identation =  [ \t\f]
 
 OpenComment = "/*"
 CloseComment = "*/"
-Comment = {OpenComment} (.)* {CloseComment}
+
 
 Plus = "+"
 Mult = "*"
@@ -64,6 +64,8 @@ Quote = [\"]
 Letter = [a-zA-Z]
 Digit = [0-9]
 
+Comment = {OpenComment} (.)+ {CloseComment}
+
 Init = init
 Read = read
 Write = write
@@ -85,7 +87,7 @@ String = String
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Sub}?{Digit}+
-FloatConstant = {Digit}+ "." {Digit} | {Digit}+ "." | "." {Digit}+
+FloatConstant = {Digit}+ "." {Digit}+ | {Digit}+ "." | "." {Digit}+
 StringConstant = {Quote} (.)+ {Quote}
 
 %%
@@ -94,7 +96,6 @@ StringConstant = {Quote} (.)+ {Quote}
 /* keywords */
 
 <YYINITIAL> {
-
 
   /* operators */
   {Assig}                                   { return symbol(ParserSym.ASSIG); }

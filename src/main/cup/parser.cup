@@ -57,6 +57,7 @@ terminal IDENTIFIER;
 
 terminal OPEN_COMMENT;
 terminal CLOSE_COMMENT;
+terminal COMMENT;
 
 // Non Terminals
 non terminal program;
@@ -80,12 +81,11 @@ non terminal comparation;
 non terminal case;
 non terminal iguales;
 non terminal statement_case;
-non terminal comments;
-non terminal comment;
 non terminal lista_expression;
 
 // Start Symbol Definition
 start with program;
+program ::= {: System.out.println("Vacio"); :};
 program ::= sentence       {: System.out.println("Program"); :};
 sentence ::= sentence grammar{: System.out.println("grammar"); :};
 sentence ::= grammar{: System.out.println("grammar"); :};
@@ -120,7 +120,7 @@ term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
 factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-//factor ::= STRING_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
+factor ::= STRING_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER CLOSE_BRACKET; //pueden ser solo variables las que lee?
@@ -152,7 +152,7 @@ statement_case ::= CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKE
 //comment ::= STRING_CONSTANT;
 
     //#Iguales ( a+w/b, [(d-3)*2,e,f] ) = 2 si (a+w/b = (d-3)*2 ) & (a+w/b =f) & (a+w/b ≠ e)
-iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET assignment;
+iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET;
     //FALTA TERMINAR LOKO
 lista_expression ::= lista_expression COMMA expression;
 lista_expression ::= expression;
