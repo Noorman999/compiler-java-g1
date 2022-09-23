@@ -30,7 +30,7 @@ import static lyc.compiler.constants.Constants.*;
 
 
 LineTerminator = \r|\n|\r\n
-//InputCharacter = [^\r\n]
+InputCharacter = [^\r\n]
 Identation =  [ \t\f]
 
 OpenComment = "/*"
@@ -49,7 +49,7 @@ Equal = "=="
 
 And = "&"
 Or = "||"
-Not = "not"
+Not = not
 
 OpenBracket = "("
 CloseBracket = ")"
@@ -60,34 +60,31 @@ CloseSquareBracket = "]"
 Colon = ":"
 Comma = ","
 Quote = [\"]
-Point = "."
 
 Letter = [a-zA-Z]
 Digit = [0-9]
 
-Init = "init"
-Read = "read"
-Write = "write"
+Init = init
+Read = read
+Write = write
 
-While = "while"
-If = "if"
-Else = "else"
+While = while
+If = if
+Else = else
 
-Iguales = "Iguales"
-Do = "DO"
-Case = "CASE"
-Default = "DEFAULT"
-Enddo = "ENDDO"
+Iguales = Iguales
+Do = DO
+Case = CASE
+Default = DEFAULT
+Enddo = ENDDO
 
-Int = "Int"
-Float = "Float"
-String = "String"
+Int = Int
+Float = Float
+String = String
 
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Sub}?{Digit}+
-//FloatConstant = {Digit}+ {Point} {Digit} | {Digit}+ {Point} | {Point} {Digit}+
-//StringConstant = {Quote} {Letter}+ {Quote}
 FloatConstant = {Digit}+ "." {Digit} | {Digit}+ "." | "." {Digit}+
 StringConstant = {Quote} (.)+ {Quote}
 
@@ -97,18 +94,6 @@ StringConstant = {Quote} (.)+ {Quote}
 /* keywords */
 
 <YYINITIAL> {
-  /* identifiers */
-  {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
-                                               else{return symbol(ParserSym.IDENTIFIER, yytext());}}
-  /* Constants */
-  {IntegerConstant}                         { long number = Long.parseLong(yytext());
-                                              if(number > MAX_INT_16 || number < 0){ throw new InvalidIntegerException(yytext()); }
-                                                else{return symbol(ParserSym.INTEGER_CONSTANT, yytext());}}
-
-  {FloatConstant}                           { return symbol(ParserSym.FLOAT_CONSTANT, yytext()); }
-
-  {StringConstant}                          { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
-                                              	else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
 
 
   /* operators */
@@ -135,7 +120,6 @@ StringConstant = {Quote} (.)+ {Quote}
   {Colon}                                   { return symbol(ParserSym.COLON); }
   {Comma}                                   { return symbol(ParserSym.COMMA); }
   {Quote}                                   { return symbol(ParserSym.QUOTE); }
-  {Point}                                   { return symbol(ParserSym.POINT); }
 
   {Init}                                    { return symbol(ParserSym.INIT); }
   {Read}                                    { return symbol(ParserSym.READ); }
@@ -154,6 +138,19 @@ StringConstant = {Quote} (.)+ {Quote}
   {Int}                                     { return symbol(ParserSym.INT); }
   {Float}                                   { return symbol(ParserSym.FLOAT); }
   {String}                                  { return symbol(ParserSym.STRING); }
+
+  /* identifiers */
+  {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
+                                                else{return symbol(ParserSym.IDENTIFIER, yytext());}}
+  /* Constants */
+  {IntegerConstant}                         { long number = Long.parseLong(yytext());
+                                                if(number > MAX_INT_16 || number < 0){ throw new InvalidIntegerException(yytext()); }
+                                                else{return symbol(ParserSym.INTEGER_CONSTANT, yytext());}}
+
+  {FloatConstant}                           { return symbol(ParserSym.FLOAT_CONSTANT, yytext()); }
+
+  {StringConstant}                          { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
+                                                else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
 
 
   /* whitespace */

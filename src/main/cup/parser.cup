@@ -6,6 +6,8 @@ class Parser;
 
 
 // Terminals
+//terminal RESERVED;
+
 terminal ASSIG;
 terminal PLUS;
 terminal SUB;
@@ -29,7 +31,6 @@ terminal CLOSE_SQUARE_BRACKET;
 terminal COLON;
 terminal COMMA;
 terminal QUOTE;
-terminal POINT;
 
 terminal INIT;
 terminal READ;
@@ -58,8 +59,9 @@ terminal OPEN_COMMENT;
 terminal CLOSE_COMMENT;
 
 // Non Terminals
-non terminal programa;
+non terminal program;
 non terminal sentence;
+non terminal grammar;
 non terminal declaration;
 non terminal assignment;
 non terminal expression;
@@ -83,34 +85,27 @@ non terminal comment;
 non terminal lista_expression;
 
 // Start Symbol Definition
-start with programa;
+start with program;
+program ::= sentence       {: System.out.println("Program"); :};
+sentence ::= sentence grammar{: System.out.println("grammar"); :};
+sentence ::= grammar{: System.out.println("grammar"); :};
 
-programa ::= sentence {: System.out.println("Programa"); :};
-
-sentence ::= sentence statement_block;
-sentence ::= statement_block {: System.out.println("Statement block"); :};
-sentence ::= sentence assignment;
-sentence ::= assignment {: System.out.println("Assignment"); :};
-sentence ::= sentence in;
-sentence ::= in {: System.out.println("Read"); :};
-sentence ::= sentence out;
-sentence ::= out {: System.out.println("Write"); :};
-sentence ::= sentence if;
-sentence ::= if {: System.out.println("If"); :};
-sentence ::= sentence while;
-sentence ::= while {: System.out.println("While"); :};
-sentence ::= sentence case ;// verificar
-sentence ::= case {: System.out.println("Case"); :};
-sentence ::= sentence iguales;
-sentence ::= iguales {: System.out.println("Iguales"); :};
-sentence ::= sentence comments;
-sentence ::= comments {: System.out.println("Comment"); :};
+grammar ::= statement_block {: System.out.println("statement_block"); :};
+grammar ::= assignment {: System.out.println("Assignment"); :};
+grammar ::= in {: System.out.println("Read"); :};
+grammar ::= out {: System.out.println("Write"); :};
+grammar ::= if {: System.out.println("If"); :};
+grammar ::= while {: System.out.println("While"); :};
+grammar ::= case {: System.out.println("Case"); :};
+grammar ::= iguales {: System.out.println("Iguales"); :};
+//sentence ::= sentence comments;
+//sentence ::= comments {: System.out.println("Comment"); :};
 
 statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET;
 statement_list ::= statement_list declaration;
 statement_list ::= declaration;
+declaration ::= IDENTIFIER COMMA declaration;
 declaration ::= IDENTIFIER COLON data_type;
-declaration ::= declaration COMMA IDENTIFIER COLON data_type;
 data_type ::= FLOAT;
 data_type ::= INT;
 data_type ::= STRING;
@@ -125,7 +120,7 @@ term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
 factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= STRING_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
+//factor ::= STRING_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER CLOSE_BRACKET; //pueden ser solo variables las que lee?
@@ -151,10 +146,10 @@ case ::= DO IDENTIFIER statement_case DEFAULT ENDDO; //No sabemos si dejar el de
 statement_case ::= statement_case CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET;
 statement_case ::= CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET;
 
-comments ::= OPEN_COMMENT comment CLOSE_COMMENT;
+//comments ::= OPEN_COMMENT comment CLOSE_COMMENT;
 
-comment ::= comment STRING_CONSTANT;
-comment ::= STRING_CONSTANT;
+//comment ::= comment STRING_CONSTANT;
+//comment ::= STRING_CONSTANT;
 
     //#Iguales ( a+w/b, [(d-3)*2,e,f] ) = 2 si (a+w/b = (d-3)*2 ) & (a+w/b =f) & (a+w/b ≠ e)
 iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET assignment;
