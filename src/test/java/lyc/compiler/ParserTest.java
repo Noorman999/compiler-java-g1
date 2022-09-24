@@ -85,6 +85,11 @@ public class ParserTest {
         compilationSuccessful(readFromFile("iguales.txt"));
     }
 
+    @Test
+    void testPrograma() throws Exception {
+        compilationSuccessful(readFromFile("testPrograma.txt"));
+    }
+
     private void compilationSuccessful(String input) throws Exception {
         assertThat(scan(input).sym).isEqualTo(ParserSym.EOF);
     }
