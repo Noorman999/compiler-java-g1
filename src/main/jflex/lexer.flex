@@ -120,7 +120,6 @@ StringConstant = {Quote} (.)+ {Quote}
   {CloseSquareBracket}                      { return symbol(ParserSym.CLOSE_SQUARE_BRACKET); }
   {Colon}                                   { return symbol(ParserSym.COLON); }
   {Comma}                                   { return symbol(ParserSym.COMMA); }
-  {Quote}                                   { return symbol(ParserSym.QUOTE); }
 
   {Init}                                    { return symbol(ParserSym.INIT); }
   {Read}                                    { return symbol(ParserSym.READ); }

@@ -30,7 +30,6 @@ terminal OPEN_SQUARE_BRACKET;
 terminal CLOSE_SQUARE_BRACKET;
 terminal COLON;
 terminal COMMA;
-terminal QUOTE;
 
 terminal INIT;
 terminal READ;
@@ -55,10 +54,6 @@ terminal FLOAT_CONSTANT;
 terminal STRING_CONSTANT;
 terminal IDENTIFIER;
 
-terminal OPEN_COMMENT;
-terminal CLOSE_COMMENT;
-terminal COMMENT;
-
 // Non Terminals
 non terminal program;
 non terminal sentence;
@@ -79,80 +74,76 @@ non terminal condition;
 non terminal logic_operator;
 non terminal comparation;
 non terminal case;
-non terminal iguales;
+non terminal block_case;
 non terminal statement_case;
+non terminal default;
+non terminal iguales;
 non terminal lista_expression;
 
 // Start Symbol Definition
 start with program;
-program ::= {: System.out.println("Vacio"); :};
-program ::= sentence       {: System.out.println("Program"); :};
-sentence ::= sentence grammar{: System.out.println("grammar"); :};
-sentence ::= grammar{: System.out.println("grammar"); :};
+program ::=                                                                     {: System.out.println("Programa vacio"); :};
+program ::= sentence                                                            {: System.out.println("Program"); :};
+sentence ::= sentence grammar                                                   ;
+sentence ::= grammar                                                            ;
 
-grammar ::= statement_block {: System.out.println("statement_block"); :};
-grammar ::= assignment {: System.out.println("Assignment"); :};
-grammar ::= in {: System.out.println("Read"); :};
-grammar ::= out {: System.out.println("Write"); :};
-grammar ::= if {: System.out.println("If"); :};
-grammar ::= while {: System.out.println("While"); :};
-grammar ::= case {: System.out.println("Case"); :};
-grammar ::= iguales {: System.out.println("Iguales"); :};
-//sentence ::= sentence comments;
-//sentence ::= comments {: System.out.println("Comment"); :};
+grammar ::= statement_block                                                     ;
+grammar ::= assignment                                                          ;
+grammar ::= in                                                                  ;
+grammar ::= out                                                                 ;
+grammar ::= if                                                                  ;
+grammar ::= while                                                               ;
+grammar ::= case                                                                ;
+grammar ::= iguales                                                             ;
 
-statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET;
-statement_list ::= statement_list declaration;
-statement_list ::= declaration;
-declaration ::= IDENTIFIER COMMA declaration;
-declaration ::= IDENTIFIER COLON data_type;
-data_type ::= FLOAT;
-data_type ::= INT;
-data_type ::= STRING;
+statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET  {: System.out.println("Statement Block"); :};
+statement_list ::= statement_list declaration                                   {: System.out.println(); :};
+statement_list ::= declaration                                                  {: System.out.println(); :};
+declaration ::= IDENTIFIER:id COMMA declaration                                 {: System.out.print(" "+id); :};
+declaration ::= IDENTIFIER:id COLON data_type                                   {: System.out.print(" "+id); :};
+data_type ::= INT                                                               {: System.out.print("DATA TYPE: INT -->");:};
+data_type ::= FLOAT                                                             {: System.out.print("DATA TYPE: FLOAT -->");:};
+data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");:};
 
-assignment ::= IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
-expression ::= expression PLUS term {: System.out.println("+"); :};
-expression ::= expression SUB term {: System.out.println("-"); :};
-expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("*"); :};
-term ::= term DIV factor {: System.out.println("/"); :};
-term ::= factor {: System.out.println("Term = factor"); :};
-factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
-factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= STRING_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
+assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression"); :};
+expression ::= expression PLUS term                                             {: System.out.println("+"); :};
+expression ::= expression SUB term                                              {: System.out.println("-"); :};
+expression ::= term                                                             {: System.out.println("Expression = Term"); :};
+term ::= term MULT factor                                                       {: System.out.println("*"); :};
+term ::= term DIV factor                                                        {: System.out.println("/"); :};
+term ::= factor                                                                 {: System.out.println("Term = factor"); :};
+factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)"); :};
+factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id); :};
+factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant ); :};
+factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant ); :};
+factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant ); :};
 
-in ::= READ OPEN_BRACKET IDENTIFIER CLOSE_BRACKET; //pueden ser solo variables las que lee?
+in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read"); :};
 
-out ::= WRITE OPEN_BRACKET IDENTIFIER CLOSE_BRACKET;
-out ::= WRITE OPEN_BRACKET STRING_CONSTANT CLOSE_BRACKET;
+out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          {: System.out.println("ID: "+ id + " <-- Write"); :};
+out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write"); :};
 
-if ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("if"); :};
-if ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("if and else"); :};
-condition ::= expression comparation expression;
-condition ::= NOT expression comparation expression {: System.out.println("not"); :};
-condition ::= expression comparation expression logic_operator expression comparation expression;
-logic_operator ::= AND {: System.out.println("&"); :};
-logic_operator ::= OR {: System.out.println("||"); :};
-comparation ::= LESS {: System.out.println("<"); :};
-comparation ::= GREATER {: System.out.println(">"); :};
-comparation ::= EQUAL {: System.out.println("=="); :};
+if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block"); :};
+if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET        {: System.out.println("If with Else Block"); :};
 
-while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {: System.out.println("While"); :};
+while ::= WHILE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                       {: System.out.println("While Block"); :};
 
-case ::= DO IDENTIFIER statement_case DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ENDDO;
-case ::= DO IDENTIFIER statement_case DEFAULT ENDDO; //No sabemos si dejar el default en este caso
-statement_case ::= statement_case CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET;
-statement_case ::= CASE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET;
+condition ::= OPEN_BRACKET expression comparation expression CLOSE_BRACKET                                                      {: System.out.println("Simple Condition"); :};
+condition ::= OPEN_BRACKET NOT expression comparation expression CLOSE_BRACKET                                                  {: System.out.println("Not Condition"); :};
+condition ::= OPEN_BRACKET expression comparation expression logic_operator expression comparation expression CLOSE_BRACKET     {: System.out.println("Multiple Condition"); :};
+logic_operator ::= AND                                                          {: System.out.println("& (AND)"); :};
+logic_operator ::= OR                                                           {: System.out.println("|| (OR)"); :};
+comparation ::= LESS                                                            {: System.out.println("< (LESS)"); :};
+comparation ::= GREATER                                                         {: System.out.println("> (GREATER)"); :};
+comparation ::= EQUAL                                                           {: System.out.println("== (EQUAL)"); :};
 
-//comments ::= OPEN_COMMENT comment CLOSE_COMMENT;
+case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id); :};
+block_case ::= statement_case;
+block_case ::= statement_case default;
+statement_case ::= CASE IDENTIFIER comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                ;
+statement_case ::= statement_case CASE IDENTIFIER comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ;
+default ::= DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET             {: System.out.println("Default Case"); :};
 
-//comment ::= comment STRING_CONSTANT;
-//comment ::= STRING_CONSTANT;
-
-    //#Iguales ( a+w/b, [(d-3)*2,e,f] ) = 2 si (a+w/b = (d-3)*2 ) & (a+w/b =f) & (a+w/b ≠ e)
-iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET;
-    //FALTA TERMINAR LOKO
+iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block"); :};
 lista_expression ::= lista_expression COMMA expression;
 lista_expression ::= expression;
