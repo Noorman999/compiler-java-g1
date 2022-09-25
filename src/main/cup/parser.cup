@@ -100,12 +100,16 @@ grammar ::= iguales                                                             
 statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET  {: System.out.println("Statement Block"); :};
 statement_list ::= statement_list declaration                                   {: System.out.println(); :};
 statement_list ::= declaration                                                  {: System.out.println(); :};
-declaration ::= IDENTIFIER:id COMMA declaration                                 {: System.out.print(" "+id); :};
-declaration ::= IDENTIFIER:id COLON data_type                                   {: System.out.print(" "+id); :};
-data_type ::= INT                                                               {: System.out.print("DATA TYPE: INT -->");:};
-data_type ::= FLOAT                                                             {: System.out.print("DATA TYPE: FLOAT -->");:};
-data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");:};
-
+declaration ::= IDENTIFIER:id COMMA declaration                                 {: System.out.print(" "+id);
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :}; //revisar
+declaration ::= IDENTIFIER:id COLON data_type                                   {: System.out.print(" "+id);
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :}; //revisar
+data_type ::= INT                                                               {: System.out.print("DATA TYPE: INT -->");
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit("int"); :}; //revisar
+data_type ::= FLOAT                                                             {: System.out.print("DATA TYPE: FLOAT -->");
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit("Float"); :}; //revisar
+data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit("String"); :}; //revisar
 assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression");
                                                                                    SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
 expression ::= expression PLUS term                                             {: System.out.println("+"); :};
@@ -124,10 +128,13 @@ factor ::= FLOAT_CONSTANT:constant                                              
 factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant );
                                                                                    SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :};
 
-in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read"); :};
+in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read");
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
 
-out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          {: System.out.println("ID: "+ id + " <-- Write"); :};
-out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write"); :};
+out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          {: System.out.println("ID: "+ id + " <-- Write");
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write");
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :}; //revisar
 
 if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block"); :};
 if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET        {: System.out.println("If with Else Block"); :};
@@ -143,11 +150,14 @@ comparation ::= LESS                                                            
 comparation ::= GREATER                                                         {: System.out.println("> (GREATER)"); :};
 comparation ::= EQUAL                                                           {: System.out.println("== (EQUAL)"); :};
 
-case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id); :};
+case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id);
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
 block_case ::= statement_case;
 block_case ::= statement_case default;
-statement_case ::= CASE IDENTIFIER comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                ;
-statement_case ::= statement_case CASE IDENTIFIER comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ;
+statement_case ::= CASE IDENTIFIER:id comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                {: System.out.println("Statement Case --> "+id);
+                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+statement_case ::= statement_case CASE IDENTIFIER:id comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET    {: System.out.println("Statement Case --> "+id);
+                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
 default ::= DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET             {: System.out.println("Default Case"); :};
 
 iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block"); :};

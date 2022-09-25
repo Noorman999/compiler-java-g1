@@ -43,8 +43,8 @@ if (var1 < 3 & d > 1){
 }
 
 if (not variable1 > 5) {
-DO d
-	CASE d == 101 {
+DO z
+	CASE z == 101 {
 		b = 100.5
 		}
 	CASE a > 202 {

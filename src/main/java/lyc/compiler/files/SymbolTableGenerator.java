@@ -44,4 +44,18 @@ public class SymbolTableGenerator implements FileGenerator {
             this.register.put(token,new SymbolTableToken("_"+newToken,dataType,newToken,dataType == "String" ? getLength(newToken) : ""));
         }
     }
+
+    static String dataTypeAux="";
+    static String tokenAux="";
+    public void addTokenInit(String token) {
+        String dataType="";
+        if(token=="String" || token=="Float" || token=="int")
+        {
+            dataTypeAux=token;
+        }
+        else if(!this.register.containsKey(token)) {
+            this.register.put(token,new SymbolTableToken(token, dataTypeAux,"",""));
+        }
+
+    }
 }
