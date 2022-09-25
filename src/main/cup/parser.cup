@@ -1,12 +1,12 @@
 package lyc.compiler;
 
 import java_cup.runtime.*;
+import lyc.compiler.files.SymbolTableGenerator;
 
 class Parser;
 
 
 // Terminals
-//terminal RESERVED;
 
 terminal ASSIG;
 terminal PLUS;
@@ -82,6 +82,7 @@ non terminal lista_expression;
 
 // Start Symbol Definition
 start with program;
+
 program ::=                                                                     {: System.out.println("Programa vacio"); :};
 program ::= sentence                                                            {: System.out.println("Program"); :};
 sentence ::= sentence grammar                                                   ;
@@ -105,7 +106,8 @@ data_type ::= INT                                                               
 data_type ::= FLOAT                                                             {: System.out.print("DATA TYPE: FLOAT -->");:};
 data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");:};
 
-assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression"); :};
+assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression");
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
 expression ::= expression PLUS term                                             {: System.out.println("+"); :};
 expression ::= expression SUB term                                              {: System.out.println("-"); :};
 expression ::= term                                                             {: System.out.println("Expression = Term"); :};
@@ -113,10 +115,14 @@ term ::= term MULT factor                                                       
 term ::= term DIV factor                                                        {: System.out.println("/"); :};
 term ::= factor                                                                 {: System.out.println("Term = factor"); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)"); :};
-factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id); :};
-factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant ); :};
-factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant ); :};
-factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant ); :};
+factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id);
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
+factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant );
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int"); :};
+factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant );
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float"); :};
+factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant );
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read"); :};
 
