@@ -18,7 +18,7 @@ public class ParserTest {
 
     @Test
     public void assignmentWithExpression() throws Exception {
-        compilationSuccessful("c=d*(e-21)/4");
+        compilationSuccessful("c = d * ( e - 21 ) / 4");
     }
 
     @Test
@@ -76,6 +76,20 @@ public class ParserTest {
         compilationSuccessful(readFromFile("while.txt"));
     }
 
+    @Test
+    void Case() throws Exception {
+        compilationSuccessful(readFromFile("case.txt"));
+    }
+
+    @Test
+    void Iguales() throws Exception {
+        compilationSuccessful(readFromFile("iguales.txt"));
+    }
+
+    @Test
+    void testPrograma() throws Exception {
+        compilationSuccessful(readFromFile("testPrograma.txt"));
+    }
 
     private void compilationSuccessful(String input) throws Exception {
         assertThat(scan(input).sym).isEqualTo(ParserSym.EOF);

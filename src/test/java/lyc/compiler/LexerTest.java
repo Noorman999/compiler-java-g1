@@ -17,8 +17,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static lyc.compiler.constants.Constants.MAX_LENGTH;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 @Disabled
+
 public class LexerTest {
 
   private Lexer lexer;
@@ -65,7 +65,7 @@ public class LexerTest {
 
   @Test
   public void assignmentWithExpressions() throws Exception {
-    scan("c=d*(e-21)/4");
+    scan("c = d * ( e - 21 ) / 4");
     assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
     assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
     assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
