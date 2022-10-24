@@ -5,6 +5,32 @@ import lyc.compiler.files.SymbolTableGenerator;
 
 class Parser;
 
+// Punteros
+//Puntero p_program = null;
+//Puntero p_sentence = null;
+//Puntero p_grammar = null;
+//Puntero p_declaration = null;
+//Puntero p_assignment = null;
+//Puntero p_expression = null;
+//Puntero p_term = null;
+//Puntero p_factor = null;
+//Puntero p_statement_block = null;
+//Puntero p_statement_list = null;
+//Puntero p_data_type = null;
+//Puntero p_in = null;
+//Puntero p_out = null;
+//Puntero p_if = null;
+//Puntero p_while = null;
+//Puntero p_condition = null;
+//Puntero p_logic_operator = null;
+//Puntero p_comparation = null;
+//Puntero p_case = null;
+//Puntero p_block_case = null;
+//Puntero p_statement_case = null;
+//Puntero p_default = null;
+//Puntero p_iguales = null;
+//Puntero p_lista_expression = null;
+
 
 // Terminals
 
@@ -83,83 +109,104 @@ non terminal lista_expression;
 // Start Symbol Definition
 start with program;
 
-program ::=                                                                     {: System.out.println("Programa vacio"); :};
-program ::= sentence                                                            {: System.out.println("Program"); :};
-sentence ::= sentence grammar                                                   ;
-sentence ::= grammar                                                            ;
+program ::=                                                                     {: System.out.println("Programa vacio"); :};//******************************************
+program ::= sentence                                                            {: System.out.println("Program");
+                                                                                   p_program=p_sentence; :};// puntero program = puntero sentencia
+sentence ::= sentence grammar                                                   ;//******************************************
+sentence ::= grammar                                                            {: p_sentence=p_grammar; :};// puntero sentence = puntero grammar
 
 grammar ::= statement_block                                                     ;
-grammar ::= assignment                                                          ;
-grammar ::= in                                                                  ;
-grammar ::= out                                                                 ;
-grammar ::= if                                                                  ;
-grammar ::= while                                                               ;
-grammar ::= case                                                                ;
-grammar ::= iguales                                                             ;
+grammar ::= assignment                                                          {: p_grammar=p_assignment; :};// puntero grammar = puntero assignment
+grammar ::= in                                                                  {: p_grammar=p_in; :};// puntero grammar = puntero in
+grammar ::= out                                                                 {: p_grammar=p_out; :};// puntero grammar = puntero out
+grammar ::= if                                                                  {: p_grammar=p_if; :};// puntero grammar = puntero if
+grammar ::= while                                                               {: p_grammar=p_while; :};// puntero grammar = puntero while
+grammar ::= case                                                                {: p_grammar=p_case; :};// puntero grammar = puntero case
+grammar ::= iguales                                                             {: p_grammar=p_iguales; :};// puntero grammar = puntero iguales
 
-statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET  {: System.out.println("Statement Block"); :};
-statement_list ::= statement_list declaration                                   {: System.out.println(); :};
-statement_list ::= declaration                                                  {: System.out.println(); :};
+statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET  {: System.out.println("Statement Block"); :};//******************************************
+statement_list ::= statement_list declaration                                   {: System.out.println(); :};//******************************************
+statement_list ::= declaration                                                  {: System.out.println();
+                                                                                   p_statement_list=p_declaration; :};// puntero statement_list = puntero declaracion
 declaration ::= IDENTIFIER:id COMMA declaration                                 {: System.out.print(" "+id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :};//******************************************
 declaration ::= IDENTIFIER:id COLON data_type                                   {: System.out.print(" "+id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :};//******************************************
 data_type ::= INT                                                               {: System.out.print("DATA TYPE: INT -->");
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit("int"); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit("int");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(INT); :};// crear hoja
 data_type ::= FLOAT                                                             {: System.out.print("DATA TYPE: FLOAT -->");
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit("Float"); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit("Float");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(FLOAT); :};// crear hoja
 data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit("String"); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenInit("String");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(STRING); :};// crear hoja
 assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
-expression ::= expression PLUS term                                             {: System.out.println("+"); :};
-expression ::= expression SUB term                                              {: System.out.println("-"); :};
-expression ::= term                                                             {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor                                                       {: System.out.println("*"); :};
-term ::= term DIV factor                                                        {: System.out.println("/"); :};
-term ::= factor                                                                 {: System.out.println("Term = factor"); :};
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   IntermediateCodeGenerator.getInstance().crearNodo(ASSIG,crearHoja(id),p_expression ); :};// crear nodo =
+expression ::= expression PLUS term                                             {: System.out.println("+");
+                                                                                   IntermediateCodeGenerator.getInstance().crearNodo(PLUS,p_expression,p_term ); :};// crear nodo +
+expression ::= expression SUB term                                              {: System.out.println("-");
+                                                                                   IntermediateCodeGenerator.getInstance().crearNodo(SUB,p_expression,p_term ); :};// crear nodo -
+expression ::= term                                                             {: System.out.println("Expression = Term");
+                                                                                   p_expression=p_term; :};// puntero expresion = puntero termino
+term ::= term MULT factor                                                       {: System.out.println("*");
+                                                                                   IntermediateCodeGenerator.getInstance().crearNodo(MULT,p_term,p_factor ); :};// crear nodo *
+term ::= term DIV factor                                                        {: System.out.println("/");
+                                                                                   IntermediateCodeGenerator.getInstance().crearNodo(DIV,p_term,p_factor ); :};// crear nodo /
+term ::= factor                                                                 {: System.out.println("Term = factor");
+                                                                                   p_term=p_factor; :};// puntero termino = puntero factor
+factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)"); :};//******************************************
 factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(id); :};// crear hoja
 factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(constant); :};// crear hoja
 factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(constant); :};// crear hoja
 factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(constant); :};// crear hoja
 
 in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};//******************************************
 
 out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          {: System.out.println("ID: "+ id + " <-- Write");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};//******************************************
 out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write");
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :}; //revisar
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :};//******************************************
 
-if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block"); :};
-if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET        {: System.out.println("If with Else Block"); :};
+if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block"); :};//******************************************
+if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET        {: System.out.println("If with Else Block"); :};//******************************************
 
-while ::= WHILE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                       {: System.out.println("While Block"); :};
+while ::= WHILE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                       {: System.out.println("While Block"); :};//******************************************
 
-condition ::= OPEN_BRACKET expression comparation expression CLOSE_BRACKET                                                      {: System.out.println("Simple Condition"); :};
-condition ::= OPEN_BRACKET NOT expression comparation expression CLOSE_BRACKET                                                  {: System.out.println("Not Condition"); :};
-condition ::= OPEN_BRACKET expression comparation expression logic_operator expression comparation expression CLOSE_BRACKET     {: System.out.println("Multiple Condition"); :};
-logic_operator ::= AND                                                          {: System.out.println("& (AND)"); :};
-logic_operator ::= OR                                                           {: System.out.println("|| (OR)"); :};
-comparation ::= LESS                                                            {: System.out.println("< (LESS)"); :};
-comparation ::= GREATER                                                         {: System.out.println("> (GREATER)"); :};
-comparation ::= EQUAL                                                           {: System.out.println("== (EQUAL)"); :};
+condition ::= OPEN_BRACKET expression comparation expression CLOSE_BRACKET                                                      {: System.out.println("Simple Condition"); :};//******************************************
+condition ::= OPEN_BRACKET NOT expression comparation expression CLOSE_BRACKET                                                  {: System.out.println("Not Condition"); :};//******************************************
+condition ::= OPEN_BRACKET expression comparation expression logic_operator expression comparation expression CLOSE_BRACKET     {: System.out.println("Multiple Condition"); :};//******************************************
+logic_operator ::= AND                                                          {: System.out.println("& (AND)");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(AND); :};// crear hoja
+logic_operator ::= OR                                                           {: System.out.println("|| (OR)");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(OR); :};// crear hoja
+comparation ::= LESS                                                            {: System.out.println("< (LESS)");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(LESS); :};// crear hoja
+comparation ::= GREATER                                                         {: System.out.println("> (GREATER)");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(GREATER); :};// crear hoja
+comparation ::= EQUAL                                                           {: System.out.println("== (EQUAL)");
+                                                                                   IntermediateCodeGenerator.getInstance().crearHoja(EQUAL); :};// crear hoja
 
 case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
-block_case ::= statement_case;
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};//******************************************
+block_case ::= statement_case                                                   {: p_block_case=p_statement_case; :};// puntero block_case = puntero statement_case
 block_case ::= statement_case default;
 statement_case ::= CASE IDENTIFIER:id comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                {: System.out.println("Statement Case --> "+id);
-                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};//******************************************
 statement_case ::= statement_case CASE IDENTIFIER:id comparation expression OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET    {: System.out.println("Statement Case --> "+id);
-                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
-default ::= DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET             {: System.out.println("Default Case"); :};
+                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};//******************************************
+default ::= DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET             {: System.out.println("Default Case"); :};//******************************************
 
-iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block"); :};
-lista_expression ::= lista_expression COMMA expression;
-lista_expression ::= expression;
+iguales ::= IGUALES OPEN_BRACKET expression COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block"); :};//******************************************
+lista_expression ::= lista_expression COMMA expression;                          //******************************************
+lista_expression ::= expression                                                 {: p_lista_expression=p_expression; :};// puntero lista_expression = puntero expression
