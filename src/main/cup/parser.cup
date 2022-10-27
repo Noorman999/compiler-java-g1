@@ -5,32 +5,34 @@ import lyc.compiler.files.SymbolTableGenerator;
 
 class Parser;
 
-// Punteros
-//Puntero p_program = null;
-//Puntero p_sentence = null;
-//Puntero p_grammar = null;
-//Puntero p_declaration = null;
-//Puntero p_assignment = null;
-//Puntero p_expression = null;
-//Puntero p_term = null;
-//Puntero p_factor = null;
-//Puntero p_statement_block = null;
-//Puntero p_statement_list = null;
-//Puntero p_data_type = null;
-//Puntero p_in = null;
-//Puntero p_out = null;
-//Puntero p_if = null;
-//Puntero p_while = null;
-//Puntero p_condition = null;
-//Puntero p_logic_operator = null;
-//Puntero p_comparation = null;
-//Puntero p_case = null;
-//Puntero p_block_case = null;
-//Puntero p_statement_case = null;
-//Puntero p_default = null;
-//Puntero p_iguales = null;
-//Puntero p_lista_expression = null;
-
+action code
+{:
+ Punteros
+Puntero p_program = null;
+Puntero p_sentence = null;
+Puntero p_grammar = null;
+Puntero p_declaration = null;
+Puntero p_assignment = null;
+Puntero p_expression = null;
+Puntero p_term = null;
+Puntero p_factor = null;
+Puntero p_statement_block = null;
+Puntero p_statement_list = null;
+Puntero p_data_type = null;
+Puntero p_in = null;
+Puntero p_out = null;
+Puntero p_if = null;
+Puntero p_while = null;
+Puntero p_condition = null;
+Puntero p_logic_operator = null;
+Puntero p_comparation = null;
+Puntero p_case = null;
+Puntero p_block_case = null;
+Puntero p_statement_case = null;
+Puntero p_default = null;
+Puntero p_iguales = null;
+Puntero p_lista_expression = null;
+:}
 
 // Terminals
 
