@@ -6,6 +6,16 @@ public class Nodo {
         private Nodo left;
         private Nodo right;
 
+    public Nodo (String dato){
+        this.dato = dato;
+        left = null;
+        right = null;
+    }
+    public Nodo (String dato, Nodo left, Nodo right){
+        this.dato = dato;
+        this.left = left;
+        this.right = right;
+    }
     public String getDato() {
         return dato;
     }
