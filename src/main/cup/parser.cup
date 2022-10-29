@@ -2,6 +2,9 @@ package lyc.compiler;
 
 import java_cup.runtime.*;
 import lyc.compiler.files.SymbolTableGenerator;
+import lyc.compiler.files.IntermediateCodeGenerator;
+import lyc.compiler.files.IntermediateCodeNodo;
+import lyc.compiler.files.Puntero;
 
 class Parser;
 
@@ -84,12 +87,13 @@ non terminal lista_expression;
 start with program;
 
 program ::=                                                                     {: System.out.println("Programa vacio"); :};
-program ::= sentence                                                            {: System.out.println("Program"); :};
+program ::= sentence                                                            {: System.out.println("Program");
+                                                                                  IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_program,Puntero.p_sentence); :};
 sentence ::= sentence grammar                                                   ;
-sentence ::= grammar                                                            ;
+sentence ::= grammar                                                            {: IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_sentence,Puntero.p_grammar); :};
 
 grammar ::= statement_block                                                     ;
-grammar ::= assignment                                                          ;
+grammar ::= assignment                                                          {: IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_grammar,Puntero.p_assignment); :};
 grammar ::= in                                                                  ;
 grammar ::= out                                                                 ;
 grammar ::= if                                                                  ;
@@ -111,22 +115,35 @@ data_type ::= FLOAT                                                             
 data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");
                                                                                    SymbolTableGenerator.getInstance().addTokenInit("String"); :}; //revisar
 assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
-expression ::= expression PLUS term                                             {: System.out.println("+"); :};
-expression ::= expression SUB term                                              {: System.out.println("-"); :};
-expression ::= term                                                             {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor                                                       {: System.out.println("*"); :};
-term ::= term DIV factor                                                        {: System.out.println("/"); :};
-term ::= factor                                                                 {: System.out.println("Term = factor"); :};
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,id+"");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_assignment,"=",Puntero.p_hojaNueva,Puntero.p_expression); :};
+expression ::= expression PLUS term                                             {: System.out.println("+");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_expression,"+",Puntero.p_expression,Puntero.p_term); :};
+expression ::= expression SUB term                                              {: System.out.println("-");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_expression,"-",Puntero.p_expression,Puntero.p_term); :};
+expression ::= term                                                             {: System.out.println("Expression = Term");
+                                                                                   IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_expression,Puntero.p_term); :};
+term ::= term MULT factor                                                       {: System.out.println("*");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_term,"*",Puntero.p_term,Puntero.p_factor); :};
+term ::= term DIV factor                                                        {: System.out.println("/");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_term,"/",Puntero.p_term,Puntero.p_factor); :};
+term ::= factor                                                                 {: System.out.println("Term = factor");
+                                                                                   IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_term,Puntero.p_factor); :};
+factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)");
+                                                                                   IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_factor,Puntero.p_expression); :};
 factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,id+""); :};
 factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,constant+""); :};
 factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,constant+""); :};
 factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :};
+                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,constant+""); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read");
                                                                                    SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar

@@ -2,6 +2,7 @@ package lyc.compiler.files;
 
 public class Puntero {
 
+    public static final String p_hojaNueva = "p_hojaNueva";
     public static final String p_program = "p_program";
     public static final String p_sentence = "p_sentence";
     public static final String p_grammar = "p_grammar";
