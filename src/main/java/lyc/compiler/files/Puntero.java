@@ -27,4 +27,7 @@ public class Puntero {
     public static final String p_default = "p_default";
     public static final String p_iguales = "p_iguales";
     public static final String p_lista_expression = "p_lista_expression";
+
+    public static final String p_exp1= "p_exp1";
+//    public static final String p_exp2= "p_exp2";
 }

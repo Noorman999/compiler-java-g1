@@ -90,13 +90,14 @@ program ::=                                                                     
 program ::= sentence                                                            {: System.out.println("Program");
                                                                                   IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_program,Puntero.p_sentence); :};
 sentence ::= sentence grammar                                                   ;
+
 sentence ::= grammar                                                            {: IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_sentence,Puntero.p_grammar); :};
 
 grammar ::= statement_block                                                     ;
 grammar ::= assignment                                                          {: IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_grammar,Puntero.p_assignment); :};
 grammar ::= in                                                                  ;
 grammar ::= out                                                                 ;
-grammar ::= if                                                                  ;
+grammar ::= if                                                                  {: IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_grammar,Puntero.p_if); :};
 grammar ::= while                                                               ;
 grammar ::= case                                                                ;
 grammar ::= iguales                                                             ;
@@ -134,16 +135,16 @@ factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                
                                                                                    IntermediateCodeGenerator.getInstance().asignarPuntero(Puntero.p_factor,Puntero.p_expression); :};
 factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id);
                                                                                    SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
-                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,id+""); :};
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_factor,id+""); :};
 factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant );
                                                                                    SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int");
-                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,constant+""); :};
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_factor,constant+""); :};
 factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant );
                                                                                    SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float");
-                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,constant+""); :};
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_factor,constant+""); :};
 factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant );
                                                                                    SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String");
-                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_hojaNueva,constant+""); :};
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_factor,constant+""); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read");
                                                                                    SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
@@ -153,19 +154,27 @@ out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          
 out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write");
                                                                                    SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :}; //revisar
 
-if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block"); :};
+if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block");
+                                                                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_if,"if",Puntero.p_condition,Puntero.p_sentence);:};
 if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET        {: System.out.println("If with Else Block"); :};
 
 while ::= WHILE condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                       {: System.out.println("While Block"); :};
 
-condition ::= OPEN_BRACKET expression comparation expression CLOSE_BRACKET                                                      {: System.out.println("Simple Condition"); :};
+//condition ::= OPEN_BRACKET expression {:IntermediateCodeGenerator.getInstance().apilar(Puntero.p_expression);:} comparation expression CLOSE_BRACKET                                                    {: System.out.println("Simple Condition");
+//                                                                                                                                   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_condition,Puntero.p_comparation,IntermediateCodeGenerator.getInstance().desapilar(),Puntero.p_expression);:};
+condition ::= OPEN_BRACKET expression //{:IntermediateCodeGenerator.getInstance().asignar(Puntero.p_exp1,Puntero.p_expression);:}
+                                        comparation expression CLOSE_BRACKET                                                    {: System.out.println("Simple Condition");
+                                                                                                                                :};//   IntermediateCodeGenerator.getInstance().agregarNodo(Puntero.p_condition,Puntero.p_comparation,Puntero.p_exp1,Puntero.p_expression);:};
 condition ::= OPEN_BRACKET NOT expression comparation expression CLOSE_BRACKET                                                  {: System.out.println("Not Condition"); :};
 condition ::= OPEN_BRACKET expression comparation expression logic_operator expression comparation expression CLOSE_BRACKET     {: System.out.println("Multiple Condition"); :};
 logic_operator ::= AND                                                          {: System.out.println("& (AND)"); :};
 logic_operator ::= OR                                                           {: System.out.println("|| (OR)"); :};
-comparation ::= LESS                                                            {: System.out.println("< (LESS)"); :};
-comparation ::= GREATER                                                         {: System.out.println("> (GREATER)"); :};
-comparation ::= EQUAL                                                           {: System.out.println("== (EQUAL)"); :};
+comparation ::= LESS                                                            {: System.out.println("< (LESS)");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_comparation,"<"); :};
+comparation ::= GREATER                                                         {: System.out.println("> (GREATER)");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_comparation,">"); :};
+comparation ::= EQUAL                                                           {: System.out.println("== (EQUAL)");
+                                                                                   IntermediateCodeGenerator.getInstance().agregarHoja(Puntero.p_comparation,"="); :};
 
 case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id);
                                                                                    SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar

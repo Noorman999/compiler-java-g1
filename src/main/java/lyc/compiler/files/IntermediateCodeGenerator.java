@@ -4,12 +4,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import lyc.compiler.files.IntermediateCodeNodo;
 
 public class IntermediateCodeGenerator implements FileGenerator {
 
     private static IntermediateCodeGenerator intermedia;
     private HashMap<String, IntermediateCodeNodo> register;
+
+    private Stack<String> pila;
 
     private IntermediateCodeGenerator() {
         this.register = new HashMap<String,IntermediateCodeNodo>();
@@ -65,6 +68,15 @@ public class IntermediateCodeGenerator implements FileGenerator {
         resParcial += nodo.dato + " ";
         return resParcial + (nodo.right != null ? recorrerR(nodo.right) : "");
     }
+
+    public void apilar(String aux){
+        this.pila.push(aux);
+    }
+
+    public String desapilar(){
+        return this.pila.pop();
+    }
+
 
 
 }
