@@ -16,6 +16,7 @@ public class IntermediateCodeGenerator implements FileGenerator {
 
     private IntermediateCodeGenerator() {
         this.register = new HashMap<String,IntermediateCodeNodo>();
+        this.pila = new Stack<String>();
     }
 
     public static IntermediateCodeGenerator getInstance() {

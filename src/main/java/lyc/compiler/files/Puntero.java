@@ -29,5 +29,8 @@ public class Puntero {
     public static final String p_lista_expression = "p_lista_expression";
 
     public static final String p_exp1= "p_exp1";
-//    public static final String p_exp2= "p_exp2";
+    public static final String p_exp2= "p_exp2";
+    public static final String p_exp3= "p_exp3";
+    public static final String p_exp4= "p_exp4";
+    public static final String p_exp5= "p_exp5";
 }
