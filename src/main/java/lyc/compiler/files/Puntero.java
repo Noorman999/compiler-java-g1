@@ -33,4 +33,8 @@ public class Puntero {
     public static final String p_exp3= "p_exp3";
     public static final String p_exp4= "p_exp4";
     public static final String p_exp5= "p_exp5";
+    public static final String p_exp6= "p_exp6";
+    public static final String p_list1= "p_list1";
+
+    public static final String p_case1= "p_case1";
 }

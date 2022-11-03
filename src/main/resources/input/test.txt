@@ -1,1 +1,8 @@
-if (a==1) {a=2}
+DO z
+	CASE z == 101 {
+		b = 100.5
+		}
+	DEFAULT{
+		a=20
+		}
+ENDDO
