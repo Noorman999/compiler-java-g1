@@ -2,7 +2,27 @@ DO z
 	CASE z == 101 {
 		b = 100.5
 		}
+	CASE x == 103 {
+        j = 10
+        }
+    CASE y == 102 {
+        h = 109
+        }
 	DEFAULT{
 		a=20
 		}
 ENDDO
+
+a = 5.1
+variable1 = 10
+p3 = "variable p3"
+var1 = 3
+variable1 = 0
+e = 12
+b = .9
+
+if (var1 < 3 ){
+	a=7
+}else{
+     a=8
+}
