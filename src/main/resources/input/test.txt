@@ -40,10 +40,10 @@ if ((var1 > 10) || (var1 < 5)){
      p2 = "hola que tal"
 }
 
-if ((var1 < 3) & (d > 1)) {
-	write("hola")
+if ((var1 > 10) & (var1 < 5)) {
+	p2 = "hola que tal"
 } else {
-     write("chau")
+     p3 = "chau"
 }
 
 if (not variable1 > 5) {
