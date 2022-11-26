@@ -27,7 +27,7 @@ public class AsmCodeGenerator implements FileGenerator {
         setHeaders(fileWriter);
         setData(fileWriter);
         setCode(fileWriter);
-        generarCodigo();
+        generarCodigo(fileWriter);
         finishCode(fileWriter);
     }
     private void setHeaders(FileWriter fileWriter) throws IOException {
@@ -62,10 +62,11 @@ public class AsmCodeGenerator implements FileGenerator {
     }
 
 
-    private void generarCodigo() {
+    private void generarCodigo(FileWriter fileWriter) throws IOException {
         //TO DO
         IntermediateCodeGenerator gci =  IntermediateCodeGenerator.getInstance();
         gci.recorrer();
+        fileWriter.write("");
     }
 
     private void finishCode(FileWriter fileWriter) throws IOException {
