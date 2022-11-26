@@ -10,7 +10,7 @@ import lyc.compiler.files.IntermediateCodeNodo;
 public class IntermediateCodeGenerator implements FileGenerator {
 
     private static IntermediateCodeGenerator intermedia;
-    private HashMap<String, IntermediateCodeNodo> register;
+    HashMap<String, IntermediateCodeNodo> register;
 
     private Stack<String> pila;
 
