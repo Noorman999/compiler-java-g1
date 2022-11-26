@@ -2,14 +2,16 @@ package lyc.compiler.files;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SymbolTableGenerator implements FileGenerator {
 
     private static SymbolTableGenerator symbolTable;
     private Map<String,SymbolTableToken> register;
-    private SymbolTableGenerator() {
+    SymbolTableGenerator() {
         this.register = new HashMap<String,SymbolTableToken>();
     }
     public static SymbolTableGenerator getInstance() {
@@ -49,7 +51,7 @@ public class SymbolTableGenerator implements FileGenerator {
     static String tokenAux="";
     public void addTokenInit(String token) {
         String dataType="";
-        if(token=="String" || token=="Float" || token=="int")
+        if(token=="String" || token=="Float" || token=="Int")
         {
             dataTypeAux=token;
         }
@@ -57,5 +59,13 @@ public class SymbolTableGenerator implements FileGenerator {
             this.register.put(token,new SymbolTableToken(token, dataTypeAux,"",""));
         }
 
+    }
+
+    public ArrayList<SymbolTableToken> getTs() {
+        ArrayList<SymbolTableToken> arr = new ArrayList<>();
+        for ( SymbolTableToken token : this.register.values() ) {
+            arr.add(token);
+        }
+        return arr;
     }
 }

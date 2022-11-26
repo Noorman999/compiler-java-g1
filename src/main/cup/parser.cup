@@ -4,11 +4,16 @@ import java_cup.runtime.*;
 import lyc.compiler.files.SymbolTableGenerator;
 import lyc.compiler.files.IntermediateCodeGenerator;
 import lyc.compiler.files.IntermediateCodeNodo;
+import lyc.compiler.files.AsmCodeGenerator;
 import lyc.compiler.files.Puntero;
 
 class Parser;
 
-action code {: IntermediateCodeGenerator gci = IntermediateCodeGenerator.getInstance(); :};
+action code {:
+SymbolTableGenerator gts =  SymbolTableGenerator.getInstance();
+IntermediateCodeGenerator gci = IntermediateCodeGenerator.getInstance();
+AsmCodeGenerator gca = AsmCodeGenerator.getInstance();
+:};
 
 // Terminals
 
@@ -91,7 +96,8 @@ start with program;
 
 program ::=                                                                     {: System.out.println("Programa vacio"); :};
 program ::= sentence                                                            {: System.out.println("Program");
-                                                                                  gci.asignarPuntero(Puntero.p_program,Puntero.p_sentence); :};
+                                                                                  gci.asignarPuntero(Puntero.p_program,Puntero.p_sentence);
+                                                                                   gca.generarAssembler();:};
 sentence ::= sentence {:gci.asignarPuntero(Puntero.p_sent1,Puntero.p_sentence);:}
                 grammar  {:gci.agregarNodo(Puntero.p_sentence," ",Puntero.p_sent1,Puntero.p_grammar); :};
 
@@ -109,17 +115,17 @@ statement_block ::= INIT OPEN_CURLY_BRACKET statement_list CLOSE_CURLY_BRACKET  
 statement_list ::= statement_list declaration                                   {: System.out.println(); :};
 statement_list ::= declaration                                                  {: System.out.println(); :};
 declaration ::= IDENTIFIER:id COMMA declaration                                 {: System.out.print(" "+id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :}; //revisar
+                                                                                   gts.addTokenInit(id+""); :}; //revisar
 declaration ::= IDENTIFIER:id COLON data_type                                   {: System.out.print(" "+id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit(id+""); :}; //revisar
+                                                                                   gts.addTokenInit(id+""); :}; //revisar
 data_type ::= INT                                                               {: System.out.print("DATA TYPE: INT -->");
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit("int"); :}; //revisar
+                                                                                   gts.addTokenInit("Int"); :}; //revisar
 data_type ::= FLOAT                                                             {: System.out.print("DATA TYPE: FLOAT -->");
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit("Float"); :}; //revisar
+                                                                                   gts.addTokenInit("Float"); :}; //revisar
 data_type ::= STRING                                                            {: System.out.print("DATA TYPE: STRING -->");
-                                                                                   SymbolTableGenerator.getInstance().addTokenInit("String"); :}; //revisar
+                                                                                   gts.addTokenInit("String"); :}; //revisar
 assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println(id+" <-- Assignment Expression");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   gts.addTokenIdAssignment(id+"");
                                                                                    gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                    gci.agregarNodo(Puntero.p_assignment,"=",Puntero.p_hojaNueva,Puntero.p_expression); :};
 expression ::= expression PLUS term                                             {: System.out.println("+");
@@ -137,25 +143,25 @@ term ::= factor                                                                 
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)");
                                                                                    gci.asignarPuntero(Puntero.p_factor,Puntero.p_expression); :};
 factor ::= IDENTIFIER:id                                                        {: System.out.println("ID: " + id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   gts.addTokenIdAssignment(id+"");
                                                                                    gci.agregarHoja(Puntero.p_factor,id+""); :};
 factor ::= INTEGER_CONSTANT:constant                                            {: System.out.println("CONSTANT INT: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Int");
+                                                                                   gts.addTokenCteAssignment(constant+"", "Int");
                                                                                    gci.agregarHoja(Puntero.p_factor,constant+""); :};
 factor ::= FLOAT_CONSTANT:constant                                              {: System.out.println("CONSTANT FLOAT: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "Float");
+                                                                                   gts.addTokenCteAssignment(constant+"", "Float");
                                                                                    gci.agregarHoja(Puntero.p_factor,constant+""); :};
 factor ::= STRING_CONSTANT:constant                                             {: System.out.println("CONSTANT STRING: " + constant );
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String");
+                                                                                   gts.addTokenCteAssignment(constant+"", "String");
                                                                                    gci.agregarHoja(Puntero.p_factor,constant+""); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+                                                                                   gts.addTokenIdAssignment(id+""); :}; //revisar
 
 out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          {: System.out.println("ID: "+ id + " <-- Write");
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+""); :}; //revisar
+                                                                                   gts.addTokenIdAssignment(id+""); :}; //revisar
 out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write");
-                                                                                   SymbolTableGenerator.getInstance().addTokenCteAssignment(constant+"", "String"); :}; //revisar
+                                                                                   gts.addTokenCteAssignment(constant+"", "String"); :}; //revisar
 
 if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block");
                                                                                                                                    gci.agregarNodo(Puntero.p_if," if ",Puntero.p_condition,Puntero.p_sentence);:};
@@ -199,7 +205,7 @@ comparation ::= EQUAL                                                           
                                                                                    gci.apilar("=="); :};
 
 case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id);
-                                                                                   SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                   gts.addTokenIdAssignment(id+"");
                                                                                    gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                    gci.agregarNodo(Puntero.p_case,"DO",Puntero.p_hojaNueva,Puntero.p_block_case); :};
 block_case ::= statement_case                                                   {:gci.asignarPuntero(Puntero.p_block_case,Puntero.p_statement_case);:};
@@ -207,14 +213,14 @@ block_case ::= statement_case DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BR
                                                                                                     gci.agregarNodo(Puntero.p_block_case," |ULT ",Puntero.p_statement_case,Puntero.p_sentence); :};
 statement_case ::= CASE IDENTIFIER:id comparation expression  {:gci.asignarPuntero(Puntero.p_exp7,Puntero.p_expression);:}
                    OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                          {: System.out.println("Statement Case --> "+id);
-                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                                                            gts.addTokenIdAssignment(id+"");
                                                                                                                             gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                                                             gci.agregarNodo(Puntero.p_case1,gci.desapilar(),Puntero.p_hojaNueva,Puntero.p_exp7);
                                                                                                                             gci.agregarNodo(Puntero.p_statement_case," CASE ",Puntero.p_case1,Puntero.p_sentence); :};
 statement_case ::= statement_case {:gci.asignarPuntero(Puntero.p_stat1,Puntero.p_statement_case);:}
                    CASE IDENTIFIER:id comparation expression  {:gci.asignarPuntero(Puntero.p_exp7,Puntero.p_expression);:}
                    OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                          {: System.out.println("Statement Case --> "+id);
-                                                                                                                            SymbolTableGenerator.getInstance().addTokenIdAssignment(id+"");
+                                                                                                                            gts.addTokenIdAssignment(id+"");
                                                                                                                             gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                                                             gci.agregarNodo(Puntero.p_case1,gci.desapilar(),Puntero.p_hojaNueva,Puntero.p_exp7);
                                                                                                                             gci.agregarNodo(Puntero.p_stat2," CASE ",Puntero.p_case1,Puntero.p_sentence);
