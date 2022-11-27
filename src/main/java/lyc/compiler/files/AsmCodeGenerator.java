@@ -76,6 +76,7 @@ public class AsmCodeGenerator implements FileGenerator {
     private int flagElse = 0;
     private int flagIf = 0;
   */
+    private int contCase = 0;
     private String operation = "";
     private int flagComp = 0;
     private int contWhile = 0;
@@ -107,6 +108,7 @@ public class AsmCodeGenerator implements FileGenerator {
         }
 
         if(nodo.dato == " DO") {
+
             assembler += nodoDo(nodo);
             return assembler;
         }
@@ -129,14 +131,33 @@ public class AsmCodeGenerator implements FileGenerator {
 
     private String recorrerDOWithDefault(IntermediateCodeNodo nodo) {
         String resParcial = "";
+        if(nodo.dato == " CASE") {
+            contCase++;
+            resParcial += recorreSubArbolCond(nodo.left);
+            resParcial += "salto_case"+contCase+":\n";
+            resParcial += recorrer2(nodo.right);
+            resParcial += "fin_case"+contCase+":\n";
+        }
+        if(nodo.dato == " DEFAULT") {
+            resParcial += recorrerDOWithDefault(nodo.left);
+            resParcial += "inicio_default"+":\n";
+            resParcial += recorrer2(nodo.right);
+            resParcial += "fin_default"+":\n";
+            return resParcial;
+        }
+        resParcial += nodo.left != null ? recorrerDOWithoutDefault(nodo.left) : "";
+        resParcial += nodo.right != null ? recorrerDOWithoutDefault(nodo.right) : "";
 
         return resParcial;
     }
     private String recorrerDOWithoutDefault(IntermediateCodeNodo nodo) {
         String resParcial = "";
         if(nodo.dato == " CASE") {
+            contCase++;
             resParcial += recorreSubArbolCond(nodo.left);
+            resParcial += "salto_case"+contCase+":\n";
             resParcial += recorrer2(nodo.right);
+            resParcial += "fin_case"+contCase+":\n";
         }
         resParcial += nodo.left != null ? recorrerDOWithoutDefault(nodo.left) : "";
         resParcial += nodo.right != null ? recorrerDOWithoutDefault(nodo.right) : "";

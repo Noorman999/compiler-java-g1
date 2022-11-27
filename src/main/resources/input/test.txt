@@ -5,4 +5,8 @@ DO a
 	CASE a > 202 {
 	    c = 4
 	    }
+	DEFAULT {
+	    n = 8 + 2 * 5
+	    a = 0
+	}
 ENDDO
