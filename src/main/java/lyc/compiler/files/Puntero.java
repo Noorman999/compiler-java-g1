@@ -17,6 +17,7 @@ public class Puntero {
     public static final String p_in = "p_in";
     public static final String p_out = "p_out";
     public static final String p_if = "p_if";
+    public static final String p_else = "p_else";
     public static final String p_while = "p_while";
     public static final String p_condition = "p_condition";
     public static final String p_condition2 = "p_condition";
@@ -34,6 +35,7 @@ public class Puntero {
     public static final String p_exp3= "p_exp3";
     public static final String p_exp4= "p_exp4";
     public static final String p_exp5= "p_exp5";
+    public static final String p_exp10= "p_exp10";
     public static final String p_exp6= "p_exp6";
     public static final String p_exp7= "p_exp7";
     public static final String p_exp8= "p_exp8";
@@ -43,6 +45,7 @@ public class Puntero {
     public static final String p_sent1= "p_sent1";
     public static final String p_sent2= "p_sent2";
     public static final String p_sent3= "p_sent3";
+    public static final String p_sent4= "p_sent4";
     public static final String p_if1= "p_if1";
     public static final String p_condi1= "p_condi1";
     public static final String p_condi2= "p_condi2";

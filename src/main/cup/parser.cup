@@ -10,7 +10,7 @@ import lyc.compiler.files.Puntero;
 class Parser;
 
 action code {:
-SymbolTableGenerator gts =  SymbolTableGenerator.getInstance();
+SymbolTableGenerator gts = SymbolTableGenerator.getInstance();
 IntermediateCodeGenerator gci = IntermediateCodeGenerator.getInstance();
 AsmCodeGenerator gca = AsmCodeGenerator.getInstance();
 :};
@@ -169,12 +169,13 @@ if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET             
 if ::= IF OPEN_BRACKET condition2 CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                 {: System.out.println("If Block");
                                                                                                                                    gci.agregarNodo(Puntero.p_if," if",Puntero.p_condition,Puntero.p_sentence);:};
 
-if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                                {:System.out.println("If Block");
-                                                                                                                                    gci.agregarNodo(Puntero.p_if," if",Puntero.p_condition,Puntero.p_sentence);
-                                                                                                                                    gci.asignarPuntero(Puntero.p_if1,Puntero.p_if);:}
+if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                            {: gci.asignarPuntero(Puntero.p_sent4,Puntero.p_sentence); System.out.println("If Block");:}
  ELSE OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                                            {: System.out.println("If with Else Block");
-                                                                                                                                   gci.agregarNodo(Puntero.p_if," else",Puntero.p_if1,Puntero.p_sentence);:};
+                                                                                                                                    gci.agregarNodo(Puntero.p_else," else",Puntero.p_sent4,Puntero.p_sentence);
+                                                                                                                                    gci.agregarNodo(Puntero.p_if," if",Puntero.p_condition,Puntero.p_else);:};
+
 //REVISAR PUNTEROS
+
 if ::= IF OPEN_BRACKET condition2 CLOSE_BRACKET  OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET {:gci.asignarPuntero(Puntero.p_if1,Puntero.p_if);:}
  ELSE  OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                                               {: System.out.println("If with Else Block");
                                                                                                                                     gci.agregarNodo(Puntero.p_if," else",Puntero.p_if1,Puntero.p_sentence);:};
@@ -186,9 +187,9 @@ while ::= WHILE OPEN_BRACKET condition2 CLOSE_BRACKET OPEN_CURLY_BRACKET sentenc
 
                                                                                                                                    gci.agregarNodo(Puntero.p_while," while",Puntero.p_condition,Puntero.p_sentence);:};
 
-condition ::= OPEN_BRACKET expression {:gci.asignarPuntero(Puntero.p_exp1,Puntero.p_expression);:}
+condition ::= OPEN_BRACKET expression {:gci.asignarPuntero(Puntero.p_exp10,Puntero.p_expression);:}
                                         comparation expression CLOSE_BRACKET                                                    {: System.out.println("Simple Condition");
-                                                                                                                                   gci.agregarNodo(Puntero.p_condition,gci.desapilar(),Puntero.p_exp1,Puntero.p_expression);:};
+                                                                                                                                   gci.agregarNodo(Puntero.p_condition,gci.desapilar(),Puntero.p_exp10,Puntero.p_expression);:};
 condition ::= OPEN_BRACKET NOT expression {:gci.asignarPuntero(Puntero.p_exp8,Puntero.p_expression);:}
                                         comparation expression CLOSE_BRACKET                                                  {: System.out.println("Not Condition");
                                                                                                                                     gci.agregarNodo(Puntero.p_condition," !"+gci.desapilar(),Puntero.p_exp8,Puntero.p_expression);:};
@@ -209,23 +210,23 @@ comparation ::= EQUAL                                                           
 case ::= DO IDENTIFIER:id block_case ENDDO                                      {: System.out.println("Block Case --> "+id);
                                                                                    gts.addTokenIdAssignment(id+"");
                                                                                    gci.agregarHoja(Puntero.p_hojaNueva,id+"");
-                                                                                   gci.agregarNodo(Puntero.p_case,"DO",Puntero.p_hojaNueva,Puntero.p_block_case); :};
+                                                                                   gci.agregarNodo(Puntero.p_case," DO",Puntero.p_hojaNueva,Puntero.p_block_case); :};
 block_case ::= statement_case                                                   {:gci.asignarPuntero(Puntero.p_block_case,Puntero.p_statement_case);:};
 block_case ::= statement_case DEFAULT OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET             {: System.out.println("Default Case");
-                                                                                                    gci.agregarNodo(Puntero.p_block_case," |ULT ",Puntero.p_statement_case,Puntero.p_sentence); :};
+                                                                                                    gci.agregarNodo(Puntero.p_block_case," DEFAULT",Puntero.p_statement_case,Puntero.p_sentence); :};
 statement_case ::= CASE IDENTIFIER:id comparation expression  {:gci.asignarPuntero(Puntero.p_exp7,Puntero.p_expression);:}
                    OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                          {: System.out.println("Statement Case --> "+id);
                                                                                                                             gts.addTokenIdAssignment(id+"");
                                                                                                                             gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                                                             gci.agregarNodo(Puntero.p_case1,gci.desapilar(),Puntero.p_hojaNueva,Puntero.p_exp7);
-                                                                                                                            gci.agregarNodo(Puntero.p_statement_case," CASE ",Puntero.p_case1,Puntero.p_sentence); :};
+                                                                                                                            gci.agregarNodo(Puntero.p_statement_case," CASE",Puntero.p_case1,Puntero.p_sentence); :};
 statement_case ::= statement_case {:gci.asignarPuntero(Puntero.p_stat1,Puntero.p_statement_case);:}
                    CASE IDENTIFIER:id comparation expression  {:gci.asignarPuntero(Puntero.p_exp7,Puntero.p_expression);:}
                    OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                          {: System.out.println("Statement Case --> "+id);
                                                                                                                             gts.addTokenIdAssignment(id+"");
                                                                                                                             gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                                                             gci.agregarNodo(Puntero.p_case1,gci.desapilar(),Puntero.p_hojaNueva,Puntero.p_exp7);
-                                                                                                                            gci.agregarNodo(Puntero.p_stat2," CASE ",Puntero.p_case1,Puntero.p_sentence);
+                                                                                                                            gci.agregarNodo(Puntero.p_stat2," CASE",Puntero.p_case1,Puntero.p_sentence);
                                                                                                                             gci.agregarNodo(Puntero.p_statement_case," _case_",Puntero.p_stat1,Puntero.p_stat2); :};
 iguales ::= IGUALES OPEN_BRACKET expression {:gci.asignarPuntero(Puntero.p_exp6,Puntero.p_expression);:} COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block");
                                                                                                                                    gci.agregarNodo(Puntero.p_iguales," iguales ",Puntero.p_exp6,Puntero.p_lista_expression);:};

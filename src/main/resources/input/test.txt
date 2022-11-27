@@ -1,5 +1,8 @@
-if(a > b) {
-c = 5
-} else {
-j = 8
-}
+DO a
+	CASE a==101 {
+		b = 100
+		}
+	CASE a > 202 {
+	    c = 4
+	    }
+ENDDO

@@ -64,6 +64,7 @@ public class AsmCodeGenerator implements FileGenerator {
         IntermediateCodeNodo raiz = gci.register.get(Puntero.p_program);
         return this.recorrer2(raiz);
     }
+    /*
     public String recorrerArbol(IntermediateCodeGenerator gci) {
 
         IntermediateCodeNodo raiz = gci.register.get(Puntero.p_program);
@@ -74,12 +75,15 @@ public class AsmCodeGenerator implements FileGenerator {
     private int flagWhile = 0;
     private int flagElse = 0;
     private int flagIf = 0;
-
+  */
     private String operation = "";
     private int flagComp = 0;
+    private int contWhile = 0;
+    private int contIf = 0;
+    private String pivotDo = "";
 
     private String recorrer2(IntermediateCodeNodo nodo) {
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
+        //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
 
         String assembler = "";
         if(nodo.left == null && nodo.right == null) {
@@ -91,20 +95,66 @@ public class AsmCodeGenerator implements FileGenerator {
             return assembler;
         }
         if(nodo.dato == " if") {
+            contIf++;
             assembler += nodoIf2(nodo);
             return assembler;
 
         }
         if(nodo.dato == " while") {
-            nodoWhile2(nodo);
+            contWhile++;
+            assembler += nodoWhile2(nodo);
             return assembler;
         }
+
+        if(nodo.dato == " DO") {
+            assembler += nodoDo(nodo);
+            return assembler;
+        }
+
+
 
         assembler += nodo.left != null ? recorrer2(nodo.left) : "";
         assembler += traducirOperacion(nodo.dato);
         assembler += nodo.right != null ? recorrer2(nodo.right) : "";
 
         return assembler;
+    }
+
+    private String nodoDo(IntermediateCodeNodo nodo) {
+        String resParcial = "";
+        resParcial += recorrerDo(nodo.right);
+
+        return resParcial;
+    }
+
+    private String recorrerDOWithDefault(IntermediateCodeNodo nodo) {
+        String resParcial = "";
+
+        return resParcial;
+    }
+    private String recorrerDOWithoutDefault(IntermediateCodeNodo nodo) {
+        String resParcial = "";
+        if(nodo.dato == " CASE") {
+            resParcial += recorreSubArbolCond(nodo.left);
+            resParcial += recorrer2(nodo.right);
+        }
+        resParcial += nodo.left != null ? recorrerDOWithoutDefault(nodo.left) : "";
+        resParcial += nodo.right != null ? recorrerDOWithoutDefault(nodo.right) : "";
+
+        return resParcial;
+    }
+
+    private String recorrerDo(IntermediateCodeNodo nodo) {
+        String resParcial = "";
+        System.out.println("////////////////////////////////////////////////////////"+resParcial);
+
+        if(nodo.dato == " DEFAULT") {
+            resParcial += recorrerDOWithDefault(nodo);
+        } else {
+            resParcial += recorrerDOWithoutDefault(nodo);
+        }
+
+        return resParcial;
     }
 
 
@@ -140,14 +190,9 @@ public class AsmCodeGenerator implements FileGenerator {
             operation = "jae";
             return "FCOMP ";
         }
-        if(dato == ">=") {
+        if(dato == "==") {
             flagComp = 1;
-            operation = "jb";
-            return "FCOMP ";
-        }
-        if(dato == "<=") {
-            flagComp = 1;
-            operation = "ja";
+            operation = "jne";
             return "FCOMP ";
         }
         return "";
@@ -173,25 +218,49 @@ public class AsmCodeGenerator implements FileGenerator {
     }
 
     private String nodoWhile2(IntermediateCodeNodo nodo) {
-        return "";
+        String resParcial = "";
+        resParcial += "inicio_while"+contWhile+":\n";
+        resParcial += recorreSubArbolCond(nodo.left);
+        resParcial += "fin_while"+contWhile+":\n";
+        resParcial += recorrer2(nodo.right);
+        resParcial += "JMP inicio_while"+contWhile+":\n";
+        resParcial += "fin_while"+contWhile+":\n";
+
+        return resParcial;
+
     }
     private String nodoIf2(IntermediateCodeNodo nodo) {
         String resParcial = "";
-        resParcial += recorreSubArbolIfCond(nodo.left);
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
-
+        resParcial += recorreSubArbolCond(nodo.left);
         if(nodo.right.dato == " else") {
-            resParcial += "else_part:\n";
+            resParcial += "saltaElse"+contIf+":\n";
+            resParcial += recorreSubArbolConElse(nodo.right);
+            resParcial += "fin_if"+contIf+":\n";
         } else {
-            resParcial += "fin_if:\n";
+            resParcial += "fin_if"+contIf+":\n";
+            resParcial += recorrer2(nodo.right);
+            resParcial += "fin_if"+contIf+":\n";
         }
-        resParcial += recorrer2(nodo.right);
-        resParcial += "fin_if:\n";
         return resParcial;
     }
 
-    private String recorreSubArbolIfCond(IntermediateCodeNodo nodo) {
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
+    private String recorreSubArbolConElse(IntermediateCodeNodo nodo) {
+        String resParcial = "";
+        resParcial += recorrer2(nodo.left);
+        resParcial += "jmp fin_if"+contIf+":\n";
+        resParcial += "saltaElse"+contIf+":\n";
+        resParcial += recorrer2(nodo.right);
+        return resParcial;
+    }
+
+    //private boolean recorreBuscaElse(IntermediateCodeNodo nodo) {
+        //recorrer
+
+    //}
+
+
+    private String recorreSubArbolCond(IntermediateCodeNodo nodo) {
+        //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
 
         String resParcial = "";
         if(nodo.left == null && nodo.right == null) {
@@ -201,9 +270,9 @@ public class AsmCodeGenerator implements FileGenerator {
             }
             return escribirHojaIf(nodo.dato);
         }
-        resParcial += recorreSubArbolIfCond(nodo.left);
+        resParcial += recorreSubArbolCond(nodo.left);
         resParcial += traducirOperacion2(nodo.dato);
-        resParcial += recorreSubArbolIfCond(nodo.right);
+        resParcial += recorreSubArbolCond(nodo.right);
         resParcial += "fstsw ax\nsahf\n"+operation+" ";
         return resParcial;
     }
@@ -241,7 +310,7 @@ public class AsmCodeGenerator implements FileGenerator {
         return "FLD "+dato+"\n";
     }
 
-
+/*
     private String recorrer(IntermediateCodeNodo nodo) {
         String resParcial = "";
         if(nodo.left == null && nodo.right == null) {
@@ -406,7 +475,7 @@ public class AsmCodeGenerator implements FileGenerator {
         }
         return "";
     }
-
+*/
     private void generarCodigoAssembler(FileWriter fileWriter) throws IOException {
         //TO DO
         IntermediateCodeGenerator gci =  IntermediateCodeGenerator.getInstance();
