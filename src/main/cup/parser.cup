@@ -226,7 +226,7 @@ statement_case ::= statement_case {:gci.asignarPuntero(Puntero.p_stat1,Puntero.p
                                                                                                                             gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                                                             gci.agregarNodo(Puntero.p_case1,gci.desapilar(),Puntero.p_hojaNueva,Puntero.p_exp7);
                                                                                                                             gci.agregarNodo(Puntero.p_stat2," CASE ",Puntero.p_case1,Puntero.p_sentence);
-                                                                                                                            gci.agregarNodo(Puntero.p_statement_case," _",Puntero.p_stat1,Puntero.p_stat2); :};
+                                                                                                                            gci.agregarNodo(Puntero.p_statement_case," _case_",Puntero.p_stat1,Puntero.p_stat2); :};
 iguales ::= IGUALES OPEN_BRACKET expression {:gci.asignarPuntero(Puntero.p_exp6,Puntero.p_expression);:} COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block");
                                                                                                                                    gci.agregarNodo(Puntero.p_iguales," iguales ",Puntero.p_exp6,Puntero.p_lista_expression);:};
 lista_expression ::= lista_expression COMMA expression                          {:  gci.asignarPuntero(Puntero.p_list1,Puntero.p_lista_expression);
