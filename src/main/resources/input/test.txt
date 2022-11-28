@@ -1,3 +1,9 @@
+if(a == 2) {
+    j = 8
+}
+while(a > b) {
+    d = 8 + 2 * c - 14
+}
 DO a
 	CASE a==101 {
 		b = 100
@@ -11,5 +17,4 @@ DO a
 	DEFAULT {
 	    p = 6
 	}
-
 ENDDO

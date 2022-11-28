@@ -64,26 +64,14 @@ public class AsmCodeGenerator implements FileGenerator {
         IntermediateCodeNodo raiz = gci.register.get(Puntero.p_program);
         return this.recorrer2(raiz);
     }
-    /*
-    public String recorrerArbol(IntermediateCodeGenerator gci) {
-
-        IntermediateCodeNodo raiz = gci.register.get(Puntero.p_program);
-        return this.recorrer(raiz);
-    }
-
-    private int flag = 0;
-    private int flagWhile = 0;
-    private int flagElse = 0;
-    private int flagIf = 0;
-  */
-    private int contCase = 1;
     private String operation = "";
     private int flagComp = 0;
     private int contWhile = 0;
     private int contIf = 0;
+    private int contCase = 1;
+
 
     private String recorrer2(IntermediateCodeNodo nodo) {
-        //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
 
         String assembler = "";
         if(nodo.left == null && nodo.right == null) {
@@ -167,7 +155,6 @@ public class AsmCodeGenerator implements FileGenerator {
 
     private String recorrerDo(IntermediateCodeNodo nodo) {
         String resParcial = "";
-        System.out.println("////////////////////////////////////////////////////////"+resParcial);
 
         if(nodo.dato == " DEFAULT") {
             resParcial += recorrerDOWithDefault(nodo);
@@ -274,15 +261,7 @@ public class AsmCodeGenerator implements FileGenerator {
         return resParcial;
     }
 
-    //private boolean recorreBuscaElse(IntermediateCodeNodo nodo) {
-        //recorrer
-
-    //}
-
-
     private String recorreSubArbolCond(IntermediateCodeNodo nodo) {
-        //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
-
         String resParcial = "";
         if(nodo.left == null && nodo.right == null) {
             if(flagComp == 1) {
@@ -331,172 +310,6 @@ public class AsmCodeGenerator implements FileGenerator {
         return "FLD "+dato+"\n";
     }
 
-/*
-    private String recorrer(IntermediateCodeNodo nodo) {
-        String resParcial = "";
-        if(nodo.left == null && nodo.right == null) {
-            return cargar(nodo.dato);
-        }
-        if(nodo.dato == "=") {
-            resParcial += nodoIgual(nodo);
-        } else {
-            if(nodo.dato == " while") {
-                resParcial += "inicio_while:\n";
-                flagWhile = 1;
-            }
-            if(nodo.dato == " if") {
-                flagIf = 1;
-            }
-            if(nodo.dato == " else") {
-                flagElse = 1;
-            }
-            resParcial += nodo.left != null ? recorrer(nodo.left) : "";
-            resParcial += traducir(nodo.dato);
-            resParcial += nodo.right != null ? recorrer(nodo.right) : "";
-
-            if(flagIf == 1) {
-                flagIf = 0;
-                resParcial += "fin_if:\n";
-            }
-
-        }
-
-        return resParcial;
-    }
-
-    private String nodoIgual(IntermediateCodeNodo nodo) {
-        String resParcial = "";
-        if(nodo.dato == "=") {
-            resParcial += recorrer(nodo.right);
-            flag = 1;
-            resParcial += recorrer(nodo.left);
-        }
-        return resParcial;
-    }
-    private String nodoIf(IntermediateCodeNodo nodo) {
-        String resParcial = "";
-        if(nodo.dato == "if") {
-            resParcial += recorrer(nodo.left);
-        }
-        return resParcial;
-    }
-
-    private String nodoWhile(IntermediateCodeNodo nodo) {
-        return "";
-    }
-
-    private String cargar(String dato) {
-        //logica para subir CTE o ID al coprocesador
-        if (flag == 1 && flagWhile == 0) {
-            flag = 0;
-            return "FSTP "+dato +"\n";
-        }
-        if(flag == 2 && flagWhile == 0) {
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njna fin_if\ntrue_part:\n";
-        }
-        if(flag == 3 && flagWhile == 0) {
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njae fin_if\ntrue_part:\n";
-        }
-        if(flag == 4 && flagWhile == 0) {
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njb fin_if\ntrue_part:\n";
-        }
-        if(flag == 5 && flagWhile == 0) {
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\nja fin_if\ntrue_part:\n";
-        }
-        if(flag == 2 && flagElse == 1) {
-            flagElse = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njna else_part\ntrue_part:\n";
-        }
-        if(flag == 3 && flagElse == 1) {
-            flagElse = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njae else_part\ntrue_part:\n";
-        }
-        if(flag == 4 && flagElse == 1) {
-            flagElse = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njb else_part\ntrue_part:\n";
-        }
-        if(flag == 5 && flagElse == 1) {
-            flagElse = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\nja else_part\ntrue_part:\n";
-        }
-        if (flag == 1 && flagWhile == 1) {
-            flagWhile = 0;
-            flag = 0;
-            return "FSTP "+dato +"\njmp inicio_while:\nfin_while:\n";
-        }
-        if(flag == 2 && flagWhile == 1) {
-            flagWhile = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njna fin_while:\n";
-        }
-        if(flag == 3 && flagWhile == 1) {
-            flagWhile = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njae fin_while:\n";
-        }
-        if(flag == 4 && flagWhile == 1) {
-            flagWhile = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\njb fin_while:\n";
-        }
-        if(flag == 5 && flagWhile == 1) {
-            flagWhile = 0;
-            flag = 0;
-            return dato+"\n"+"fstsw ax\nsahf\nja fin_while:\n";
-        }
-        return "FLD "+ dato +"\n";
-    }
-
-    private String traducir(String dato) {
-        if(dato == "+") {
-            return "FADD\n";
-        }
-        if(dato == "-") {
-            return "FSUB\n";
-        }
-        if(dato == "*") {
-            return "FMUL\n";
-        }
-        if(dato == "/") {
-            return "FDIV\n";
-        }
-        if(dato == ">") {
-            flag = 2;
-            return "FCOMP ";
-        }
-        if(dato == "<") {
-            flag = 3;
-            return "FCOMP ";
-        }
-        if(dato == ">=") {
-            flag = 4;
-            return "FCOMP ";
-        }
-        if(dato == "<=") {
-            flag = 5;
-            return "FCOMP ";
-        }
-        if(dato == " else") {
-            flagElse = 1;
-            return "else_part:\n";
-        }
-        if(dato == " while") {
-            flagWhile = 1;
-        }
-        if(dato == " _") {
-            return "\n";
-        }
-        return "";
-    }
-*/
     private void generarCodigoAssembler(FileWriter fileWriter) throws IOException {
         //TO DO
         IntermediateCodeGenerator gci =  IntermediateCodeGenerator.getInstance();

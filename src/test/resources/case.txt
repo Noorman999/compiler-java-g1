@@ -1,0 +1,15 @@
+DO a
+	CASE a==101 {
+		b = 100
+		}
+	CASE a > 202 {
+	    c = 4
+	    }
+	CASE a > 200 {
+	    l = 7
+	}
+	DEFAULT {
+	    p = 6
+	}
+
+ENDDO
