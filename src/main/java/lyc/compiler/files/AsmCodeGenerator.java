@@ -76,12 +76,11 @@ public class AsmCodeGenerator implements FileGenerator {
     private int flagElse = 0;
     private int flagIf = 0;
   */
-    private int contCase = 0;
+    private int contCase = 1;
     private String operation = "";
     private int flagComp = 0;
     private int contWhile = 0;
     private int contIf = 0;
-    private String pivotDo = "";
 
     private String recorrer2(IntermediateCodeNodo nodo) {
         //System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++"+nodo.dato);
@@ -125,6 +124,7 @@ public class AsmCodeGenerator implements FileGenerator {
     private String nodoDo(IntermediateCodeNodo nodo) {
         String resParcial = "";
         resParcial += recorrerDo(nodo.right);
+        resParcial += "fin_do:\n";
 
         return resParcial;
     }
@@ -134,19 +134,18 @@ public class AsmCodeGenerator implements FileGenerator {
         if(nodo.dato == " CASE") {
             contCase++;
             resParcial += recorreSubArbolCond(nodo.left);
-            resParcial += "salto_case"+contCase+":\n";
+            resParcial += "case"+contCase+":\n";
             resParcial += recorrer2(nodo.right);
-            resParcial += "fin_case"+contCase+":\n";
+            resParcial += "jmp fin_do:\n";
+            resParcial += "case"+contCase+":\n";
         }
         if(nodo.dato == " DEFAULT") {
             resParcial += recorrerDOWithDefault(nodo.left);
-            resParcial += "inicio_default"+":\n";
             resParcial += recorrer2(nodo.right);
-            resParcial += "fin_default"+":\n";
             return resParcial;
         }
-        resParcial += nodo.left != null ? recorrerDOWithoutDefault(nodo.left) : "";
-        resParcial += nodo.right != null ? recorrerDOWithoutDefault(nodo.right) : "";
+        resParcial += nodo.left != null ? recorrerDOWithDefault(nodo.left) : "";
+        resParcial += nodo.right != null ? recorrerDOWithDefault(nodo.right) : "";
 
         return resParcial;
     }
@@ -155,9 +154,10 @@ public class AsmCodeGenerator implements FileGenerator {
         if(nodo.dato == " CASE") {
             contCase++;
             resParcial += recorreSubArbolCond(nodo.left);
-            resParcial += "salto_case"+contCase+":\n";
+            resParcial += "case"+contCase+":\n";
             resParcial += recorrer2(nodo.right);
-            resParcial += "fin_case"+contCase+":\n";
+            resParcial += "jmp fin_do:\n";
+            resParcial += "case"+contCase+":\n";
         }
         resParcial += nodo.left != null ? recorrerDOWithoutDefault(nodo.left) : "";
         resParcial += nodo.right != null ? recorrerDOWithoutDefault(nodo.right) : "";
