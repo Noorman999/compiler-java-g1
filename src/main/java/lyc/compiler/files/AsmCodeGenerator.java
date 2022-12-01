@@ -100,6 +100,12 @@ public class AsmCodeGenerator implements FileGenerator {
             return assembler;
         }
 
+        if(nodo.dato == " iguales") {
+
+            assembler += nodoIguales(nodo);
+            return assembler;
+        }
+
 
 
         assembler += nodo.left != null ? recorrer2(nodo.left) : "";
@@ -116,6 +122,37 @@ public class AsmCodeGenerator implements FileGenerator {
 
         return resParcial;
     }
+
+    private String nodoIguales(IntermediateCodeNodo nodo) {
+        String resParcial = "";
+        String exprAComp = "";
+        resParcial += recorrer2(nodo.left);
+        exprAComp = resParcial;
+        resParcial += recorrerIgualesList(nodo.right, exprAComp);
+
+        resParcial += "fin_do:\n";
+        return resParcial;
+    }
+
+    private String recorrerIgualesList(IntermediateCodeNodo nodo, String exprAComp) {
+        String resParcial = "";
+
+        if(nodo.left == null && nodo.right == null) {
+            return escribirHoja(nodo.dato);
+        }
+
+        // Aca estamos para en el -, nodo intermedio.
+
+        resParcial += nodo.left != null ? recorrerIgualesList(nodo.left, exprAComp) : "";
+        resParcial += exprAComp;
+        resParcial += "FCOMP"+"\n";
+        resParcial += "fstsw ax\nsahf\n"+"je incrementacont:\n";
+        resParcial += "sigexpresionlist" + contlist + ":\n";
+        resParcial += nodo.right != null ? recorrerIgualesList(nodo.right, exprAComp) : "";
+
+        return resParcial;
+    }
+
 
     private String recorrerDOWithDefault(IntermediateCodeNodo nodo) {
         String resParcial = "";
