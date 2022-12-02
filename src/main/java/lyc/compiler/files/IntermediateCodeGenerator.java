@@ -13,10 +13,12 @@ public class IntermediateCodeGenerator implements FileGenerator {
     HashMap<String, IntermediateCodeNodo> register;
 
     private Stack<String> pila;
+    private Stack<IntermediateCodeNodo> pilaNodo;
 
     private IntermediateCodeGenerator() {
         this.register = new HashMap<String,IntermediateCodeNodo>();
         this.pila = new Stack<String>();
+        this.pilaNodo = new Stack<IntermediateCodeNodo>();
     }
 
     public static IntermediateCodeGenerator getInstance() {
@@ -78,6 +80,13 @@ public class IntermediateCodeGenerator implements FileGenerator {
         return this.pila.pop();
     }
 
+    public void apilarNodo(String puntero) {
+        IntermediateCodeNodo nodo = this.register.get(puntero);
+        this.pilaNodo.push(nodo);
+    }
 
-
+    public void desapilarNodo(String puntero) {
+        IntermediateCodeNodo nodo = this.pilaNodo.pop();
+        this.register.put(puntero,nodo);
+    }
 }
