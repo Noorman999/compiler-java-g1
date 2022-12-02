@@ -14,8 +14,12 @@ public class Puntero {
     public static final String p_statement_block = "p_statement_block";
     public static final String p_statement_list = "p_statement_list";
     public static final String p_data_type = "p_data_type";
-    public static final String p_in = "p_in";
-    public static final String p_out = "p_out";
+    public static final String p_read = "p_read";
+    public static final String p_read1 = "p_read1";
+    public static final String p_read2 = "p_read2";
+    public static final String p_write = "p_write";
+    public static final String p_write1 = "p_write1";
+    public static final String p_write2 = "p_write2";
     public static final String p_if = "p_if";
     public static final String p_else = "p_else";
     public static final String p_while = "p_while";

@@ -1,1 +1,1 @@
-Iguales ( a+b, [e,f,3+2,a])
+a = (b + c) * d

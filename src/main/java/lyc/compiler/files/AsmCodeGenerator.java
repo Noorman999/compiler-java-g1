@@ -69,6 +69,7 @@ public class AsmCodeGenerator implements FileGenerator {
     private int contWhile = 0;
     private int contIf = 0;
     private int contCase = 1;
+    private int contlist = 0;
 
 
     private String recorrer2(IntermediateCodeNodo nodo) {
@@ -99,13 +100,23 @@ public class AsmCodeGenerator implements FileGenerator {
             assembler += nodoDo(nodo);
             return assembler;
         }
+        if(nodo.dato == " read") {
 
+            assembler += nodoRead(nodo);
+            return assembler;
+        }
+        if(nodo.dato == " write") {
+
+            assembler += nodoWrite(nodo);
+            return assembler;
+        }
+        /*
         if(nodo.dato == " iguales") {
 
             assembler += nodoIguales(nodo);
             return assembler;
         }
-
+        */
 
 
         assembler += nodo.left != null ? recorrer2(nodo.left) : "";
@@ -113,6 +124,14 @@ public class AsmCodeGenerator implements FileGenerator {
         assembler += nodo.right != null ? recorrer2(nodo.right) : "";
 
         return assembler;
+    }
+
+    private String nodoWrite(IntermediateCodeNodo nodo) {
+        return "DisplayString " + nodo.right.dato+"\n";
+    }
+
+    private String nodoRead(IntermediateCodeNodo nodo) {
+        return "GetString " + nodo.right.dato+"\n";
     }
 
     private String nodoDo(IntermediateCodeNodo nodo) {

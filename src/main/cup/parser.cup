@@ -104,8 +104,8 @@ sentence ::= sentence {:gci.asignarPuntero(Puntero.p_sent1,Puntero.p_sentence);:
 sentence ::= grammar                                                            {: gci.asignarPuntero(Puntero.p_sentence,Puntero.p_grammar); :};
 grammar ::= statement_block                                                     ;
 grammar ::= assignment                                                          {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_assignment); :};
-grammar ::= in                                                                  ;
-grammar ::= out                                                                 ;
+grammar ::= in                                                                  {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_read); :};
+grammar ::= out                                                                 {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_write); :};
 grammar ::= if                                                                  {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_if); :};
 grammar ::= while                                                               {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_while); :};
 grammar ::= case                                                                {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_case); :};
@@ -156,12 +156,21 @@ factor ::= STRING_CONSTANT:constant                                             
                                                                                    gci.agregarHoja(Puntero.p_factor,constant+""); :};
 
 in ::= READ OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                            {: System.out.println("ID: "+ id + " <-- Read");
-                                                                                   gts.addTokenIdAssignment(id+""); :}; //revisar
+                                                                                   gts.addTokenIdAssignment(id+"");
+                                                                                   gci.agregarHoja(Puntero.p_read1,"R");
+                                                                                   gci.agregarHoja(Puntero.p_read2,id+"");
+                                                                                   gci.agregarNodo(Puntero.p_read," read",Puntero.p_read1,Puntero.p_read2); :};
 
 out ::= WRITE OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET                          {: System.out.println("ID: "+ id + " <-- Write");
-                                                                                   gts.addTokenIdAssignment(id+""); :}; //revisar
+                                                                                   gts.addTokenIdAssignment(id+"");
+                                                                                   gci.agregarHoja(Puntero.p_write1,"W");
+                                                                                   gci.agregarHoja(Puntero.p_write2,id+"");
+                                                                                   gci.agregarNodo(Puntero.p_write," write",Puntero.p_write1,Puntero.p_write2); :}; //revisar
 out ::= WRITE OPEN_BRACKET STRING_CONSTANT:constant CLOSE_BRACKET               {: System.out.println("CONSTANT STRING: "+ constant + " <-- Write");
-                                                                                   gts.addTokenCteAssignment(constant+"", "String"); :}; //revisar
+                                                                                   gts.addTokenCteAssignment(constant+"", "String");
+                                                                                   gci.agregarHoja(Puntero.p_write1,"W");
+                                                                                   gci.agregarHoja(Puntero.p_write2,constant+"");
+                                                                                   gci.agregarNodo(Puntero.p_write," write",Puntero.p_write1,Puntero.p_write2);:}; //revisar
 
 if ::= IF condition OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                             {: System.out.println("If Block");
                                                                                                                                    gci.agregarNodo(Puntero.p_if," if",Puntero.p_condition,Puntero.p_sentence);:};
