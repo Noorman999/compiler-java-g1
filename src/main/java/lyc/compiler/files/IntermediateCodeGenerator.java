@@ -35,12 +35,10 @@ public class IntermediateCodeGenerator implements FileGenerator {
     }
 
     public void agregarHoja(String hojaNueva,String dato) {
-        System.out.println("*********************************************************************: " + dato);
         this.register.put(hojaNueva,new IntermediateCodeNodo(dato));
     }
 
     public void agregarNodo(String aux,String dato,String izquierda, String derecha) {
-        System.out.println("*********************************************************************: " + dato);
         IntermediateCodeNodo izq = register.get(izquierda);
         IntermediateCodeNodo der = register.get(derecha);
         this.register.put(aux,new IntermediateCodeNodo(dato, izq, der));

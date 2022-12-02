@@ -9,6 +9,9 @@ public class Puntero {
     public static final String p_declaration = "p_declaration";
     public static final String p_assignment = "p_assignment";
     public static final String p_expression = "p_expression";
+    public static final String p_expaux = "p_expaux";
+    public static final String p_termaux = "p_termaux";
+    public static final String p_factaux = "p_factaux";
     public static final String p_term = "p_term";
     public static final String p_factor = "p_factor";
     public static final String p_statement_block = "p_statement_block";
@@ -40,6 +43,8 @@ public class Puntero {
     public static final String p_exp4= "p_exp4";
     public static final String p_exp5= "p_exp5";
     public static final String p_exp10= "p_exp10";
+    public static final String p_exp11= "p_exp11";
+    public static final String p_exp12= "p_exp12";
     public static final String p_exp6= "p_exp6";
     public static final String p_exp7= "p_exp7";
     public static final String p_exp8= "p_exp8";

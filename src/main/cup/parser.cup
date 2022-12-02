@@ -203,7 +203,9 @@ condition ::= OPEN_BRACKET NOT expression {:gci.asignarPuntero(Puntero.p_exp8,Pu
                                         comparation expression CLOSE_BRACKET                                                  {: System.out.println("Not Condition");
                                                                                                                                     gci.agregarNodo(Puntero.p_condition," !"+gci.desapilar(),Puntero.p_exp8,Puntero.p_expression);:};
 //REVISAR SI FALTA ALGO
-condition2 ::= condition logic_operator condition                                                                              {: System.out.println("DOUBLE Condition");:};
+condition2 ::= condition
+logic_operator condition                                                                                                        {: System.out.println("DOUBLE Condition");:};
+
 
 logic_operator ::= AND                                                          {: System.out.println("& (AND)");
                                                                                    gci.apilar("&"); :};
