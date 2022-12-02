@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
 import lyc.compiler.files.IntermediateCodeNodo;
 
 public class IntermediateCodeGenerator implements FileGenerator {
@@ -14,11 +15,13 @@ public class IntermediateCodeGenerator implements FileGenerator {
 
     private Stack<String> pila;
     private Stack<IntermediateCodeNodo> pilaNodo;
+    private Stack<IntermediateCodeNodo> pilaNodo2;
 
     private IntermediateCodeGenerator() {
         this.register = new HashMap<String,IntermediateCodeNodo>();
         this.pila = new Stack<String>();
         this.pilaNodo = new Stack<IntermediateCodeNodo>();
+        this.pilaNodo2 = new Stack<IntermediateCodeNodo>();
     }
 
     public static IntermediateCodeGenerator getInstance() {
@@ -29,31 +32,33 @@ public class IntermediateCodeGenerator implements FileGenerator {
     }
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
-//        String file = String.format("%s\n");
-//        for (Map.Entry<String, IntermediateCodeNodo> entry : this.register.entrySet()) {
-//            file += entry.getValue().toString() + "\n";
-//        }
         fileWriter.write(this.intermedia.recorrer());
     }
 
     public void agregarHoja(String hojaNueva,String dato) {
-        System.out.println("*********************************************************************: " + dato);
         this.register.put(hojaNueva,new IntermediateCodeNodo(dato));
     }
 
-    public void agregarNodo(String aux,String dato,String izquierda, String derecha) {
-        System.out.println("*********************************************************************: " + dato);
+    public void agregarNodo(String aux,String padre,String izquierda, String derecha) {
         IntermediateCodeNodo izq = register.get(izquierda);
         IntermediateCodeNodo der = register.get(derecha);
-        this.register.put(aux,new IntermediateCodeNodo(dato, izq, der));
+        this.register.put(aux,new IntermediateCodeNodo(padre, izq, der));
+        System.out.println("Nodo creado: "+izq.dato+" "+padre+" "+der.dato);
     }
 
     public void asignarPuntero(String izquierda,String derecha) {
+        if(derecha == "null") {
+            this.register.put(izquierda,null);
+        }
         IntermediateCodeNodo der = this.register.get(derecha);
         this.register.put(izquierda,der);
     }
 
-    public String recorrer(){
+    public String getPuntero(String puntero) {
+        IntermediateCodeNodo nodo = register.get(puntero);
+        return nodo.dato;
+    }
+        public String recorrer(){
 
         IntermediateCodeNodo raiz = this.register.get(Puntero.p_program);
 
@@ -84,9 +89,17 @@ public class IntermediateCodeGenerator implements FileGenerator {
         IntermediateCodeNodo nodo = this.register.get(puntero);
         this.pilaNodo.push(nodo);
     }
+    public void apilarNodo2(String puntero) {
+        IntermediateCodeNodo nodo = this.register.get(puntero);
+        this.pilaNodo2.push(nodo);
+    }
 
     public void desapilarNodo(String puntero) {
         IntermediateCodeNodo nodo = this.pilaNodo.pop();
+        this.register.put(puntero,nodo);
+    }
+    public void desapilarNodo2(String puntero) {
+        IntermediateCodeNodo nodo = this.pilaNodo2.pop();
         this.register.put(puntero,nodo);
     }
 }

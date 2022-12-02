@@ -56,4 +56,7 @@ public class Puntero {
     public static final String p_stat1= "p_stat1";
     public static final String p_stat2= "p_stat2";
 
+    public static final String p_aux= "p_aux";
+    public static final String p_aux2= "p_aux2";
+
 }
