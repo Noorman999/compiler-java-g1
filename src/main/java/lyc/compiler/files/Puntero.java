@@ -35,6 +35,9 @@ public class Puntero {
     public static final String p_statement_case = "p_statement_case";
     public static final String p_default = "p_default";
     public static final String p_iguales = "p_iguales";
+    public static final String p_contaux = "p_contaux";
+    public static final String p_expAComp = "p_expAComp";
+    public static final String p_auxIguales = "p_auxIguales";
     public static final String p_lista_expression = "p_lista_expression";
 
     public static final String p_exp1= "p_exp1";

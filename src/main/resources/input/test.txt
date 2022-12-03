@@ -12,8 +12,7 @@ if(b > 2) {
     x = 2
 }
 while(b == 5) {
-j = 8
-b = b + 1
+    b = b + 1
 }
 
 DO a
@@ -27,3 +26,6 @@ DO a
 	    x = 6
 	}
 ENDDO
+
+Iguales ( a+w/b, [(d - 3)*2,e,f] )
+
