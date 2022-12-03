@@ -139,6 +139,7 @@ public class AsmCodeGenerator implements FileGenerator {
         return resParcial;
     }
 
+
     private String nodoIguales(IntermediateCodeNodo nodo) {
         String resParcial = "";
         if(nodo.dato == " iguales") {
@@ -147,11 +148,18 @@ public class AsmCodeGenerator implements FileGenerator {
         }
         if(nodo.dato == " cuerpoIguales") {
             resParcial += recorrer2(nodo.left);
+            resParcial += "element"+contlist+"list:\n";
             resParcial += recorrerIgualesList(nodo.right);
             return resParcial;
         }
+        contlist++;
+        resParcial += "FCOMP @aux\nfstsw ax\nsahf\nbne finlist:\n";
+        resParcial += "FLD @cont\nFLD 1\nFADD\nFSTP @cont\n";
+        resParcial += "finlist:\n";
+
         return resParcial;
     }
+
 
     private String recorrerIgualesList(IntermediateCodeNodo nodo) {
         String resParcial = "";
@@ -159,11 +167,18 @@ public class AsmCodeGenerator implements FileGenerator {
         if(nodo.left == null && nodo.right == null) {
             return escribirHoja(nodo.dato);
         }
-        resParcial += nodo.left != null ? recorrer2(nodo.left) : "";
-        resParcial += nodo.right != null ? recorrer2(nodo.right) : "";
+        resParcial += nodo.left != null ? recorrerIgualesList(nodo.left) : "";
+        if(nodo.dato == "_") {
+            contlist++;
+            resParcial += "FCOMP @aux\nfstsw ax\nsahf\nbne element"+contlist+"list:\n";
+            resParcial += "FLD @cont\nFLD 1\nFADD\nFSTP @cont\n";
+            resParcial += "element"+contlist+"list:\n";
+        }
+        resParcial += nodo.right != null ? recorrerIgualesList(nodo.right) : "";
+        resParcial += traducirOperacion2(nodo.dato);
 
         return resParcial;
-        }
+    }
 
     private String recorrerDOWithDefault(IntermediateCodeNodo nodo) {
         String resParcial = "";
