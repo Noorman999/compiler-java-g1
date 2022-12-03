@@ -44,7 +44,3 @@ if(x > 4) {
 } else {
     write("x menor 4")
 }
-
-if((a > f) & (b < 5)) {
-    a = f + 2
-}
