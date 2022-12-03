@@ -1,23 +1,28 @@
+/* INIT */
 init {
-    a : Float
-    b, c, x : Int
+    a, w, e : Float
+    b, c, d, f, x : Int
     d : String
 }
 
+/* assigments and aritmetic */
 c = 9
-b = 5 + 8 * c
+b = 5 + 8 * c - 18 / c
 a = 2.5
 d = "hola"
-read(a)
+read(x)
 
+/* Simple If */
 if(b > 2) {
     write(d)
 }
 
-while(b == 5) {
-    b = b + 1
+/* Simple While */
+while(b < 5) {
+    b = b - 1
 }
 
+/* Do Case */
 DO a
     CASE a==10 {
         c = 100
@@ -30,4 +35,16 @@ DO a
     }
 ENDDO
 
+/* Iguales */
 Iguales ( a+w/b, [b* 3 + 2 * d,e,f] )
+
+/* If with Else */
+if(x > 4) {
+    write("x mayor 4")
+} else {
+    write("x menor 4")
+}
+
+if((a > f) & (b < 5)) {
+    a = f + 2
+}

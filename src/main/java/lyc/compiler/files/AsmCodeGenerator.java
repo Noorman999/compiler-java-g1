@@ -5,14 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AsmCodeGenerator implements FileGenerator {
-
-    //PARA QUE NO FALLE main/compiler
     private static AsmCodeGenerator asm;
 
     AsmCodeGenerator() {
     }
-
-    //PARA QUE NO FALLE main/compiler
     public static AsmCodeGenerator getInstance() {
         if(asm == null) {
             asm = new AsmCodeGenerator();
@@ -226,8 +222,6 @@ public class AsmCodeGenerator implements FileGenerator {
         return resParcial;
     }
 
-
-
     private String escribirHojaIgual(String dato) {
         return "FLD "+dato+"\n";
     }
@@ -266,7 +260,6 @@ public class AsmCodeGenerator implements FileGenerator {
         }
         return "";
     }
-
 
     private String nodoIgual2(IntermediateCodeNodo nodo) {
         String resParcial = "";

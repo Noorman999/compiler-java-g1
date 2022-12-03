@@ -95,12 +95,8 @@ start with program;
 
 
 program ::=                                                                     {: System.out.println("Programa vacio"); :};
-program ::= sentence                                                            {: System.out.println("Program");
-                                                                                  gci.asignarPuntero(Puntero.p_program,Puntero.p_sentence);
-                                                                                   gca.generarAssembler();:};
-sentence ::= sentence {:gci.asignarPuntero(Puntero.p_sent1,Puntero.p_sentence);:}
-                grammar  {:gci.agregarNodo(Puntero.p_sentence," _",Puntero.p_sent1,Puntero.p_grammar); :};
-
+program ::= sentence                                                            {: System.out.println("Program");gci.asignarPuntero(Puntero.p_program,Puntero.p_sentence);gca.generarAssembler();:};
+sentence ::= sentence {: gci.asignarPuntero(Puntero.p_sent1,Puntero.p_sentence); :} grammar {: gci.agregarNodo(Puntero.p_sentence," _",Puntero.p_sent1,Puntero.p_grammar); :};
 sentence ::= grammar                                                            {: gci.asignarPuntero(Puntero.p_sentence,Puntero.p_grammar); :};
 grammar ::= statement_block                                                     ;
 grammar ::= assignment                                                          {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_assignment); :};
@@ -128,16 +124,16 @@ assignment ::= IDENTIFIER:id ASSIG expression                                   
                                                                                    gts.addTokenIdAssignment(id+"");
                                                                                    gci.agregarHoja(Puntero.p_hojaNueva,id+"");
                                                                                    gci.agregarNodo(Puntero.p_assignment,"=",Puntero.p_hojaNueva,Puntero.p_expression); :};
-expression ::= expression PLUS term                                             {: System.out.println("+");
-                                                                                   gci.agregarNodo(Puntero.p_expression,"+",Puntero.p_expression,Puntero.p_term); :};
-expression ::= expression SUB term                                              {: System.out.println("-");
-                                                                                   gci.agregarNodo(Puntero.p_expression,"-",Puntero.p_expression,Puntero.p_term); :};
+expression ::= expression {:gci.asignarPuntero(Puntero.p_expAux,Puntero.p_expression); :}PLUS term  {: System.out.println("+");
+                                                                                   gci.agregarNodo(Puntero.p_expression,"+",Puntero.p_expAux,Puntero.p_term); :};
+expression ::= expression {:gci.asignarPuntero(Puntero.p_expAux,Puntero.p_expression); :} SUB term  {: System.out.println("-");
+                                                                                   gci.agregarNodo(Puntero.p_expression,"-",Puntero.p_expAux,Puntero.p_term); :};
 expression ::= term                                                             {: System.out.println("Expression = Term");
                                                                                    gci.asignarPuntero(Puntero.p_expression,Puntero.p_term); :};
-term ::= term MULT factor                                                       {: System.out.println("*");
-                                                                                   gci.agregarNodo(Puntero.p_term,"*",Puntero.p_term,Puntero.p_factor); :};
-term ::= term DIV factor                                                        {: System.out.println("/");
-                                                                                   gci.agregarNodo(Puntero.p_term,"/",Puntero.p_term,Puntero.p_factor); :};
+term ::= term {:gci.asignarPuntero(Puntero.p_termAux,Puntero.p_term);:} MULT factor {: System.out.println("*");
+                                                                                   gci.agregarNodo(Puntero.p_term,"*",Puntero.p_termAux,Puntero.p_factor); :};
+term ::= term {:gci.asignarPuntero(Puntero.p_termAux,Puntero.p_term);:} DIV factor {: System.out.println("/");
+                                                                                   gci.agregarNodo(Puntero.p_term,"/",Puntero.p_termAux,Puntero.p_factor); :};
 term ::= factor                                                                 {: System.out.println("Term = factor");
                                                                                    gci.asignarPuntero(Puntero.p_term,Puntero.p_factor); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET                                {: System.out.println("Factor = (Expression)");
