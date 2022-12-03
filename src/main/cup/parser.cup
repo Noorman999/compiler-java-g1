@@ -239,7 +239,7 @@ statement_case ::= statement_case {:gci.asignarPuntero(Puntero.p_stat1,Puntero.p
                                                                                                                             gci.agregarNodo(Puntero.p_statement_case," _case_",Puntero.p_stat1,Puntero.p_stat2); :};
 
 iguales ::= IGUALES OPEN_BRACKET expression {:gci.asignarPuntero(Puntero.p_exp6,Puntero.p_expression); :} COMMA
-OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET           {: System.out.println("Iguales Block[R37]");
+OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET           {: System.out.println("Iguales Block");
                                                                                   gts.addTokenIdAssignment("@aux");
                                                                                   gts.addTokenIdAssignment("@cont");
                                                                                   gci.agregarHoja(Puntero.p_contaux,"@cont");

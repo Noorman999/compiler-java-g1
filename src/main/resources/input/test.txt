@@ -30,4 +30,4 @@ DO a
     }
 ENDDO
 
-Iguales ( a+w/b, [3 + 2,e,f] )
+Iguales ( a+w/b, [b* 3 + 2 * d,e,f] )
