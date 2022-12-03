@@ -56,4 +56,10 @@ public class Puntero {
     public static final String p_stat1= "p_stat1";
     public static final String p_stat2= "p_stat2";
 
+    public static final String p_aux= "p_aux";
+    public static final String p_aux2= "p_aux2";
+    public static final String p_contaux= "p_contaux";
+    public static final String p_auxIguales= "p_auxIguales";
+    public static final String p_expAComp= "p_expAComp";
+
 }
