@@ -43,7 +43,6 @@ public class IntermediateCodeGenerator implements FileGenerator {
         IntermediateCodeNodo izq = register.get(izquierda);
         IntermediateCodeNodo der = register.get(derecha);
         this.register.put(aux,new IntermediateCodeNodo(padre, izq, der));
-        System.out.println("Nodo creado: "+izq.dato+" "+padre+" "+der.dato);
     }
 
     public void asignarPuntero(String izquierda,String derecha) {
@@ -71,7 +70,6 @@ public class IntermediateCodeGenerator implements FileGenerator {
             return nodo.dato + "";
 
         String resParcial = "";
-
         resParcial += nodo.left != null ? recorrerR(nodo.left) : "";
         resParcial += nodo.dato + " ";
         return resParcial + (nodo.right != null ? recorrerR(nodo.right) : "");

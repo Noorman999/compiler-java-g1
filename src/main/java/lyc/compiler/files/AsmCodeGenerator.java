@@ -110,14 +110,11 @@ public class AsmCodeGenerator implements FileGenerator {
             assembler += nodoWrite(nodo);
             return assembler;
         }
-        /*
-        if(nodo.dato == " iguales") {
 
+        if(nodo.dato == " iguales") {
             assembler += nodoIguales(nodo);
             return assembler;
         }
-        */
-
 
         assembler += nodo.left != null ? recorrer2(nodo.left) : "";
         assembler += traducirOperacion(nodo.dato);
@@ -144,34 +141,29 @@ public class AsmCodeGenerator implements FileGenerator {
 
     private String nodoIguales(IntermediateCodeNodo nodo) {
         String resParcial = "";
-        String exprAComp = "";
-        resParcial += recorrer2(nodo.left);
-        exprAComp = resParcial;
-        resParcial += recorrerIgualesList(nodo.right, exprAComp);
-
-        resParcial += "fin_do:\n";
+        if(nodo.dato == " iguales") {
+            resParcial += "FLD 0\nFSTP "+nodo.left.dato+"\n";
+            resParcial += nodoIguales(nodo.right);
+        }
+        if(nodo.dato == " cuerpoIguales") {
+            resParcial += recorrer2(nodo.left);
+            resParcial += recorrerIgualesList(nodo.right);
+            return resParcial;
+        }
         return resParcial;
     }
 
-    private String recorrerIgualesList(IntermediateCodeNodo nodo, String exprAComp) {
+    private String recorrerIgualesList(IntermediateCodeNodo nodo) {
         String resParcial = "";
 
         if(nodo.left == null && nodo.right == null) {
             return escribirHoja(nodo.dato);
         }
-
-        // Aca estamos para en el -, nodo intermedio.
-
-        resParcial += nodo.left != null ? recorrerIgualesList(nodo.left, exprAComp) : "";
-        resParcial += exprAComp;
-        resParcial += "FCOMP"+"\n";
-        resParcial += "fstsw ax\nsahf\n"+"je incrementacont:\n";
-        resParcial += "sigexpresionlist" + contlist + ":\n";
-        resParcial += nodo.right != null ? recorrerIgualesList(nodo.right, exprAComp) : "";
+        resParcial += nodo.left != null ? recorrer2(nodo.left) : "";
+        resParcial += nodo.right != null ? recorrer2(nodo.right) : "";
 
         return resParcial;
-    }
-
+        }
 
     private String recorrerDOWithDefault(IntermediateCodeNodo nodo) {
         String resParcial = "";

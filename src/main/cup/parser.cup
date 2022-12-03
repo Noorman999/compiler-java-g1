@@ -97,8 +97,8 @@ start with program;
 
 program ::=                                                                    {: System.out.println("Programa vacio [R0]"); :};
 program ::= sentence                                                           {: gci.asignarPuntero(Puntero.p_program, Puntero.p_sentence);gca.generarAssembler();System.out.println("program = sentence [R1]\nPrograma finalizado");:};
-sentence::= sentence grammar                                                   {: gci.agregarNodo(Puntero.p_sentence," _",Puntero.p_aux,Puntero.p_grammar); System.out.println("sentence = sentence grammar [R2]");:};
-sentence::= grammar                                                            {: gci.desapilarNodo(Puntero.p_aux);gci.asignarPuntero(Puntero.p_sentence,Puntero.p_grammar); System.out.println("sentence = grammar [R3]"); :};
+sentence::= sentence grammar                                                   {: gci.agregarNodo(Puntero.p_sentence," _",Puntero.p_sentence,Puntero.p_grammar); System.out.println("sentence = sentence grammar [R2]");:};
+sentence::= grammar                                                            {: gci.asignarPuntero(Puntero.p_sentence,Puntero.p_grammar); System.out.println("sentence = grammar [R3]"); :};
 grammar ::= statement_block                                                    {: System.out.println("grammar = statement_block [R4]"); :};
 grammar ::= assignment                                                         {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_assignment); System.out.println("grammar = assignment [R5]");:};
 grammar ::= in                                                                 {: gci.asignarPuntero(Puntero.p_grammar,Puntero.p_read); System.out.println("grammar = in [R6]");:};
@@ -124,8 +124,7 @@ data_type ::= STRING                                                            
 assignment ::= IDENTIFIER:id ASSIG expression                                   {: System.out.println("assignment [R13]");
                                                                                    gts.addTokenIdAssignment(id+"");
                                                                                    gci.agregarHoja(Puntero.p_hojaNueva,id+"");
-                                                                                   gci.agregarNodo(Puntero.p_assignment,"=",Puntero.p_hojaNueva,Puntero.p_expression);
-                                                                                   gci.apilarNodo(Puntero.p_assignment);:};
+                                                                                   gci.agregarNodo(Puntero.p_assignment,"=",Puntero.p_hojaNueva,Puntero.p_expression);:};
 expression ::= expression {:gci.apilarNodo(Puntero.p_expression);:} PLUS term      {: System.out.println("expression + term [R14]");
                                                                                     gci.desapilarNodo(Puntero.p_expression);
                                                                                    gci.agregarNodo(Puntero.p_expression,"+",Puntero.p_expression,Puntero.p_term); :};
@@ -179,8 +178,7 @@ if ::= IF {: gci.apilarNodo(Puntero.p_sentence);gci.asignarPuntero(Puntero.p_sen
 condition {: gci.asignarPuntero(Puntero.p_condition,Puntero.p_comparation);gci.apilarNodo2(Puntero.p_condition); :}
 OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                                         {: System.out.println("If block [R22]");
                                                                                                         gci.desapilarNodo2(Puntero.p_condition);
-                                                                                                        gci.agregarNodo(Puntero.p_if," if",Puntero.p_condition,Puntero.p_sentence);
-                                                                                                        gci.apilarNodo(Puntero.p_if);:};
+                                                                                                        gci.agregarNodo(Puntero.p_if," if",Puntero.p_condition,Puntero.p_sentence);:};
 //REVISAR PUNTEROS
 /*
 if ::= IF {: gci.asignarPuntero(Puntero.p_sentence,"null"); gci.apilarNodo(Puntero.p_sentence);:} OPEN_BRACKET condition2 {: gci.apilarNodo2(Puntero.p_condition); :} CLOSE_BRACKET OPEN_CURLY_BRACKET sentence CLOSE_CURLY_BRACKET                                 {: System.out.println("If Block");
@@ -257,12 +255,18 @@ statement_case ::= statement_case                                               
                                                                                      gci.agregarNodo(Puntero.p_stat2," CASE",Puntero.p_case1,Puntero.p_sentence);
                                                                                      gci.agregarNodo(Puntero.p_statement_case," _case_",Puntero.p_stat1,Puntero.p_stat2); :};
 
-iguales ::= IGUALES OPEN_BRACKET expression {:gci.asignarPuntero(Puntero.p_exp6,Puntero.p_expression);:}
-COMMA OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET  {: System.out.println("Iguales Block[R37]");
-                                                                                  gci.agregarNodo(Puntero.p_iguales," iguales",Puntero.p_exp6,Puntero.p_lista_expression);:};
+iguales ::= IGUALES OPEN_BRACKET expression {:gci.apilarNodo(Puntero.p_expression); :} COMMA
+OPEN_SQUARE_BRACKET lista_expression CLOSE_SQUARE_BRACKET CLOSE_BRACKET           {: System.out.println("Iguales Block[R37]");
+                                                                                  gts.addTokenIdAssignment("@aux");
+                                                                                  gts.addTokenIdAssignment("@cont");
+                                                                                  gci.agregarHoja(Puntero.p_contaux,"@cont");
+                                                                                  gci.agregarHoja(Puntero.p_auxIguales,"@aux");
+                                                                                  gci.desapilarNodo(Puntero.p_expression);
+                                                                                  gci.agregarNodo(Puntero.p_expAComp,"=",Puntero.p_auxIguales,Puntero.p_expression);
+                                                                                  gci.agregarNodo(Puntero.p_iguales," cuerpoIguales",Puntero.p_expAComp,Puntero.p_lista_expression);
+                                                                                  gci.agregarNodo(Puntero.p_iguales," iguales",Puntero.p_contaux,Puntero.p_iguales);:};
 
-lista_expression ::= lista_expression COMMA expression                          {:  gci.asignarPuntero(Puntero.p_list1,Puntero.p_lista_expression);
-                                                                                    gci.agregarNodo(Puntero.p_lista_expression,"_",Puntero.p_list1,Puntero.p_expression); :};
-lista_expression ::= expression                                                 {:  gci.asignarPuntero(Puntero.p_lista_expression,Puntero.p_expression); :};
+lista_expression ::= lista_expression COMMA expression                          {: System.out.println("lista , expression [R38]");gci.agregarNodo(Puntero.p_lista_expression,"_",Puntero.p_lista_expression,Puntero.p_expression); :};
+lista_expression ::= expression                                                 {: System.out.println("expression [R39]");gci.asignarPuntero(Puntero.p_lista_expression,Puntero.p_expression);:};
 
 
